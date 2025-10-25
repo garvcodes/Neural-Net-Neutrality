@@ -1,3 +1,5 @@
+.env
+
 # macOS
 .DS_Store
 .AppleDouble
