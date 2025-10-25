@@ -1,5 +1,25 @@
+# Dependencies
+node_modules/
+package-lock.json
+
+# Vercel
 .vercel
-./node_modules
-.DS_Store
+
+# Environment variables
 .env
 .env.local
+.env*.local
+
+# OS files
+.DS_Store
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
