@@ -69,6 +69,8 @@ def build_batched_prompt(questions: list) -> Dict[str, str]:
 
 
 # ---------- OpenAI call ----------
+# Is this jsut for open AI?
+# We 
 
 def call_openai_batch(
     model: str,
@@ -91,7 +93,6 @@ def call_openai_batch(
     # OpenAI >=1.0: choices[0].message.content holds the JSON string
     content = resp.choices[0].message.content or ""
     return content.strip()
-
 
 # ---------- parsing ----------
 
