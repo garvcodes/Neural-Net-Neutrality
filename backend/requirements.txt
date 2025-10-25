@@ -2,7 +2,7 @@ fastapi>=0.95
 uvicorn[standard]>=0.20
 openai>=0.27
 python-dotenv>=1.0
-
+google-genai
 # Optional tooling for extracting statements from websites
 playwright>=1.40
 requests>=2.28
