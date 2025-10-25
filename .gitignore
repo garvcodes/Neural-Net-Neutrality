@@ -149,3 +149,4 @@ coverage/
 .idea/
 .vagrant/
 *.seed.env
+.env
