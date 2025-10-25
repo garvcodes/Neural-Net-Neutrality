@@ -1,4 +1,14 @@
+# Environment variables
 .env
+.env.local
+.env*.local
+
+# Vercel
+.vercel
+
+# Dependencies
+node_modules/
+package-lock.json
 
 # macOS
 .DS_Store
@@ -18,7 +28,6 @@ $RECYCLE.BIN/
 *~
 
 # Node / JavaScript
-node_modules/
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
@@ -33,11 +42,12 @@ coverage/
 .vite/
 .svelte-kit/
 
-# Python
+# Python (for local development)
 __pycache__/
 *.py[cod]
 *$py.class
 .pytest_cache/
+*.pyc
 *.pyo
 *.pyd
 venv/
@@ -46,53 +56,6 @@ ENV/
 .venv/
 pip-wheel-metadata/
 *.egg-info/
-build/
-dist/
-
-# Java / Maven / Gradle
-target/
-build/
-*.class
-*.jar
-*.war
-*.ear
-*.iml
-
-# Go
-bin/
-*.exe
-*.exe~
-*.test
-vendor/
-
-# Rust
-target/
-**/*.rs.bk
-
-# Ruby
-*.gem
-.bundle/
-vendor/bundle/
-log/
-tmp/
-coverage/
-
-# PHP / Composer
-vendor/
-composer.lock
-composer.phar
-
-# .NET / Visual Studio
-*.user
-*.suo
-*.userosscache
-*.sln.docstates
-.vs/
-bin/
-obj/
-*.exe
-*.dll
-*.pdb
 
 # IDEs and editors
 .idea/
@@ -102,54 +65,16 @@ obj/
 *.sublime-workspace
 *.sublime-project
 
-# Docker
-docker-compose.override.yml
-.env
-.env.*.local
-
-# Terraform
-.terraform/
-*.tfstate
-*.tfstate.*
-crash.log
-override.tf*
-override.tf.json
-*.tfvars
-
 # Logs and temp
 *.log
 logs/
 *.tmp
 tmp/
-.cache/
 *.bak
 *.swp
 *.swo
-
-# Archives and binaries
-*.zip
-*.tar.gz
-*.rar
-*.7z
-*.gz
-*.tgz
-*.bin
-*.exe
-*.dll
-*.so
-*.dylib
 
 # Certificates and keys
 *.pem
 *.key
 *.crt
-
-# Misc
-coverage/
-.idea/
-.vagrant/
-*.seed.env
-.env
-.env
-.env
-.env
