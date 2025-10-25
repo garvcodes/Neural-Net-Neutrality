@@ -148,4 +148,4 @@ tmp/
 coverage/
 .idea/
 .vagrant/
-*.seed
+*.seed.env
