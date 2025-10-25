@@ -14,7 +14,6 @@ document.addEventListener("DOMContentLoaded", () => {
       console.log("Loaded", questions.length, "questions");
 
       const picks = [...questions].sort(() => 0.5 - Math.random()).slice(0, 3);
-
       picks.forEach(({ text }) => {
         const card = document.createElement("div");
         card.className = "question-card";
@@ -35,20 +34,27 @@ document.addEventListener("DOMContentLoaded", () => {
     if (!prompt) return;
 
     results.classList.remove("hidden");
+    outputA.classList.add("loading-text");
+    outputB.classList.add("loading-text");
     outputA.textContent = "Getting response from OpenAI...";
     outputB.textContent = "Getting response from Gemini...";
 
     try {
-      // Use backend proxy through Express at localhost:3001
-      const resp = await fetch("http://localhost:3001/api/battle", {
+      const resp = await fetch("http://127.0.0.1:8000/battle", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ prompt }),
       });
 
       const data = await resp.json();
-      outputA.textContent = data.openai || "No response from OpenAI.";
-      outputB.textContent = data.gemini || "No response from Gemini.";
+      outputA.classList.remove("loading-text");
+      outputB.classList.remove("loading-text");
+
+      // Typewriter reveal for both outputs
+      await Promise.all([
+        typeWriter(outputA, data.openai || "No response from OpenAI."),
+        typeWriter(outputB, data.gemini || "No response from Gemini."),
+      ]);
     } catch (err) {
       outputA.textContent = "Error contacting server.";
       outputB.textContent = "Error contacting server.";
@@ -64,4 +70,20 @@ document.addEventListener("DOMContentLoaded", () => {
       .filter(line => line.length > 0)
       .map((q, i) => ({ id: i + 1, text: q }));
   }
+    // --- Typewriter animation ---
+  async function typeWriter(element, text) {
+    element.textContent = "";
+    element.classList.add("typing");
+    const delay = 12; // ms per character
+
+    for (let i = 0; i < text.length; i++) {
+      element.textContent += text[i];
+      await new Promise((r) => setTimeout(r, delay));
+      element.scrollTop = element.scrollHeight; // auto-scroll
+    }
+
+    element.classList.remove("typing");
+  }
+  
 });
+
