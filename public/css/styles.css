@@ -78,3 +78,138 @@ body{
   .hero-card{order:-1;margin-bottom:16px}
   .nav{display:none}
 }
+.battle-section {
+  padding: 4rem 0;
+  text-align: center;
+}
+
+.battle-title {
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+}
+
+.battle-subtitle {
+  color: #666;
+  margin-bottom: 2rem;
+}
+
+.battle-form {
+  max-width: 700px;
+  margin: 0 auto 3rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+
+.battle-form textarea {
+  width: 100%;
+  height: 150px;
+  font-size: 1rem;
+  font-family: "Inter", sans-serif;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  padding: 1rem;
+  resize: vertical;
+  transition: border-color 0.2s ease;
+}
+
+.battle-form textarea:focus {
+  border-color: #0070f3;
+  outline: none;
+}
+
+.battle-results {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+  text-align: left;
+  margin-top: 3rem;
+}
+
+.model-column h2 {
+  text-align: center;
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin-bottom: 0.75rem;
+}
+
+.output-box {
+  background: #f9fafb;
+  border: 1px solid #ddd;
+  border-radius: 12px;
+  padding: 1rem;
+  min-height: 200px;
+  white-space: pre-wrap;
+  font-family: "Inter", sans-serif;
+  line-height: 1.5;
+  overflow-y: auto;
+}
+
+.hidden {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .battle-results {
+    grid-template-columns: 1fr;
+  }
+}
+.ratings-section {
+  padding: 4rem 0;
+  text-align: center;
+}
+
+.ratings-title {
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+}
+
+.ratings-subtitle {
+  color: #666;
+  margin-bottom: 2rem;
+}
+
+.table-container {
+  overflow-x: auto;
+}
+
+.ratings-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 0 auto;
+  font-family: "Inter", sans-serif;
+  min-width: 700px;
+}
+
+.ratings-table th,
+.ratings-table td {
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid #eee;
+  text-align: center;
+}
+
+.ratings-table th {
+  background-color: #f9fafb;
+  font-weight: 600;
+}
+
+.ratings-table tbody tr:hover {
+  background-color: #f5f8ff;
+}
+
+.sortable {
+  cursor: pointer;
+  color: #0070f3;
+}
+
+@media (max-width: 768px) {
+  .ratings-table th,
+  .ratings-table td {
+    font-size: 0.9rem;
+    padding: 0.5rem;
+  }
+}
+
