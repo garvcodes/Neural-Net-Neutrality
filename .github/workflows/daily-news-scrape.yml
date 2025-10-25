@@ -1,0 +1,58 @@
+name: Daily News Scrape
+
+on:
+  # Run daily at 9 AM PST (5 PM UTC / 17:00 UTC)
+  # Note: GitHub Actions uses UTC time, PST is UTC-8, PDT is UTC-7
+  schedule:
+    - cron: '0 17 * * *'  # 9 AM PST (during standard time)
+    # Use '0 16 * * *' for 9 AM PDT (during daylight saving time)
+
+  # Allow manual trigger from GitHub UI
+  workflow_dispatch:
+
+jobs:
+  scrape-and-import:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install Node.js dependencies
+        run: npm install @insforge/sdk
+
+      - name: Install Python dependencies
+        run: pip install requests
+
+      - name: Run scraper and import to database
+        env:
+          BRIGHTDATA_API_TOKEN: ${{ secrets.BRIGHTDATA_API_TOKEN }}
+          INSFORGE_API_KEY: ${{ secrets.INSFORGE_API_KEY }}
+        run: |
+          cd backend/news-report
+          chmod +x scrape_and_import.sh
+          ./scrape_and_import.sh
+
+      - name: Upload artifacts (optional - for debugging)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: scraped-data
+          path: backend/news-report/data/*.json
+          retention-days: 7
+
+      - name: Notify on failure (optional)
+        if: failure()
+        run: |
+          echo "⚠️ Daily scrape failed!"
+          echo "Check the logs at: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"

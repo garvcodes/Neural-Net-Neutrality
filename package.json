@@ -1,0 +1,5 @@
+{
+  "dependencies": {
+    "@insforge/sdk": "^0.0.56"
+  }
+}
