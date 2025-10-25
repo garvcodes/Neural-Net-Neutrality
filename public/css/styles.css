@@ -1,0 +1,80 @@
+:root{
+  /* Lighter, appealing neutral palette with gradient accents */
+  --bg-1: #ffffff; /* pure white */
+  --bg-2: #f7fbff; /* ultra-light cool tint */
+  --accent-start: #e6f2ff; /* pale blue */
+  --accent-end: #f6f9fc; /* pale cool */
+  --accent-color: #9aa6b2; /* muted slate for text accents */
+  --muted: #6b7280; /* secondary text */
+  --card: rgba(16,24,32,0.04);
+  --glass: rgba(16,24,32,0.02);
+  --nav-bg: linear-gradient(90deg,var(--accent-start),var(--accent-end));
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+.site-dark-mode .site-header, .site-dark-mode body { background: linear-gradient(180deg,var(--bg-1),var(--bg-2)); }
+body{
+  margin:0;
+  font-family:Inter, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
+  background: linear-gradient(120deg,var(--bg-1),var(--bg-2));
+  color:#0f1724; /* readable dark text on light neutral background */
+  -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
+  background-size:200% 200%;
+  animation: gradientShift 12s ease infinite;
+}
+
+@keyframes gradientShift{
+  0%{background-position:0% 50%}
+  50%{background-position:100% 50%}
+  100%{background-position:0% 50%}
+}
+.container{max-width:1100px;margin:0 auto;padding:32px}
+.site-header{position:sticky;top:14px;z-index:40;display:block;padding:10px 0}
+.site-header .container{background:var(--nav-bg);border-radius:12px;padding:10px 20px;box-shadow:0 8px 28px rgba(16,24,32,0.06);border:1px solid rgba(16,24,32,0.04);backdrop-filter:blur(6px)}
+.header-inner{display:flex;align-items:center;justify-content:space-between}
+.brand{display:flex;align-items:center;gap:12px}
+.logo{width:44px;height:44px}
+.brand-name{font-weight:700;font-family:Poppins, Inter;color:var(--accent-color);letter-spacing:0.2px}
+.nav a{color:var(--muted);text-decoration:none;margin-left:18px;font-weight:600;position:relative;padding:6px 4px}
+.nav a::after{content:"";position:absolute;left:8px;right:8px;bottom:-8px;height:4px;background:linear-gradient(90deg,var(--accent-start),var(--accent-end));border-radius:3px;transform:scaleX(0);transform-origin:left center;transition:transform .28s cubic-bezier(.2,.9,.3,1),opacity .2s}
+.nav a:hover::after{transform:scaleX(1);opacity:1}
+.nav a:focus{outline:2px solid rgba(0,0,0,0.06);outline-offset:4px}
+
+.hero{padding:80px 0}
+.hero-inner{display:grid;grid-template-columns:1fr 360px;gap:32px;align-items:center}
+.hero-copy h1{font-size:clamp(28px,4vw,44px);line-height:1.02;margin:0 0 12px}
+.lead{color:var(--muted);font-size:16px;margin-bottom:20px}
+.cta-row{display:flex;gap:12px}
+.btn{display:inline-block;padding:12px 18px;border-radius:10px;text-decoration:none;font-weight:700}
+.btn.primary{background:linear-gradient(90deg, #e6e9eb, #f3f4f6);color:#0f1724;border:1px solid rgba(15,23,36,0.06)}
+.btn.ghost{background:transparent;border:1px solid rgba(15,23,36,0.06);color:var(--muted)}
+.btn:hover{transform:translateY(-4px);transition:transform .22s cubic-bezier(.2,.9,.3,1)}
+
+.hero-card{background:#ffffff;padding:18px;border-radius:12px;border:1px solid rgba(16,24,32,0.06);box-shadow:0 6px 20px rgba(16,24,32,0.04);animation:float 6s ease-in-out infinite}
+.card-header{font-weight:700;color:var(--accent);margin-bottom:8px}
+.stats{list-style:none;padding:0;margin:0;display:flex;gap:12px;justify-content:space-between}
+.stats li{min-width:88px;text-align:center}
+.stats li strong{display:block;font-size:20px;color:#111827}
+
+@keyframes float{
+  0%{transform:translateY(0)}
+  50%{transform:translateY(-6px)}
+  100%{transform:translateY(0)}
+}
+.section{padding:64px 0}
+.section.alt{background:linear-gradient(180deg, rgba(16,24,32,0.01), transparent)}
+.section-title{font-size:20px;margin-bottom:18px}
+.features-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:18px}
+.features-grid article{background:#ffffff;padding:18px;border-radius:10px;border:1px solid rgba(16,24,32,0.04);transition:transform .22s cubic-bezier(.2,.9,.3,1),box-shadow .22s ease}
+.features-grid article:hover{transform:translateY(-8px);box-shadow:0 12px 30px rgba(16,24,32,0.06)}
+.how-list{padding-left:20px;color:var(--muted)}
+
+.site-footer{padding:28px 0;border-top:1px solid rgba(16,24,32,0.04);color:var(--muted)}
+.footer-inner{display:flex;justify-content:space-between;align-items:center}
+
+@media (max-width:880px){
+  .hero-inner{grid-template-columns:1fr}
+  .hero-card{order:-1;margin-bottom:16px}
+  .nav{display:none}
+}
