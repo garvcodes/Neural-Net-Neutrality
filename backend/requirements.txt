@@ -9,3 +9,6 @@ requests>=2.28
 pandas>=1.5
 plotly>=5.0
 streamlit>=1.20
+numpy>=1.26
+pandas>=2.2
+matplotlib>=3.8
