@@ -2,6 +2,7 @@ import re
 import json
 from typing import Optional, List, Dict
 
+#* dictionary mapping regex patterns to Likert scale values
 LIKERT_MAP = {
     r"strongly\s*agree": 2,
     r"\bagree\b": 1,
@@ -17,6 +18,7 @@ LIKERT_MAP = {
 }
 
 
+#* Convert a model's raw text reply into an integer score or None
 def parse_response_to_likert(text: str) -> Optional[int]:
     if text is None:
         return None
@@ -32,7 +34,7 @@ def parse_response_to_likert(text: str) -> Optional[int]:
         return LIKERT_MAP.get(fr"\b{v}\b")
     return None
 
-
+#* The function takes the set of axis-aligned Likert scores and computes a normalized score
 def compute_axis_score(scores: List[Optional[int]], axis_questions_count: int, max_scale: int = 10) -> float:
     # scores are in [-2..+2]
     raw = sum(s for s in scores if s is not None)
