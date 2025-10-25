@@ -39,7 +39,8 @@ document.addEventListener("DOMContentLoaded", () => {
     outputB.textContent = "Getting response from Gemini...";
 
     try {
-      const resp = await fetch("http://127.0.0.1:8000/battle", {
+      // Use backend proxy through Express at localhost:3001
+      const resp = await fetch("http://localhost:3001/api/battle", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ prompt }),
