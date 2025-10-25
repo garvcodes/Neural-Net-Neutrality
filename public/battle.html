@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Battle! — Neural Net Neutrality</title>
-  <meta name="description" content="Compare LLM responses side-by-side for any prompt." />
+  <meta name="description" content="Compare model responses side-by-side for any prompt or question." />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
@@ -22,19 +22,20 @@
       <nav class="nav">
         <a href="./index.html">Home</a>
         <a href="./battle.html" class="active">Battle!</a>
-        
-        <a href="#docs">Docs</a>
+        <a href="./ratings.html">Ratings</a>
       </nav>
     </div>
   </header>
 
   <main>
     <section class="battle-section container">
-      <h1 class="battle-title">Prompt Battle</h1>
-      <p class="battle-subtitle">Enter any prompt below to compare model responses side by side.</p>
+      <h1 class="battle-title">Prompt Battle!</h1>
+      <p class="battle-subtitle">Select a question below or write your own prompt.</p>
+
+      <div id="question-grid" class="question-grid"></div>
 
       <form id="battle-form" class="battle-form">
-        <textarea id="prompt-input" placeholder="Type your prompt here..." required></textarea>
+        <textarea id="prompt-input" placeholder="Or type your own prompt..." rows="4"></textarea>
         <button type="submit" class="btn primary">Run Battle</button>
       </form>
 
