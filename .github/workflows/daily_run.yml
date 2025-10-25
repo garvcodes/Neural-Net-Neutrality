@@ -29,7 +29,10 @@ jobs:
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
         run: |
-          python tools/daily_wrapper.py --models "${{ secrets.MODELS }}" --summary-out data/summary/aggregates.csv --plots-out data/plots
+          python -m tools.daily_wrapper \
+            --models "${{ secrets.MODELS }}" \
+            --summary-out data/summary/aggregates.csv \
+            --plots-out data/plots
 
       - name: Upload plots
         uses: actions/upload-artifact@v4
