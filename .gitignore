@@ -1,25 +1,80 @@
-# Dependencies
-node_modules/
-package-lock.json
-
-# Vercel
-.vercel
-
 # Environment variables
 .env
 .env.local
 .env*.local
 
-# OS files
+# Vercel
+.vercel
+
+# Dependencies
+node_modules/
+package-lock.json
+
+# macOS
 .DS_Store
+.AppleDouble
+.LSOverride
+Icon?
+__MACOSX/
 
-# Python
-__pycache__/
-*.pyc
-.venv/
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+*.lnk
 
-# Logs
-*.log
+# Linux
+*~
+
+# Node / JavaScript
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+.pnp.*
+.pnp.js
+.cache/
+dist/
+out/
+build/
+coverage/
+.next/
+.vite/
+.svelte-kit/
+
+# Python (for local development)
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+*.pyc
+*.pyo
+*.pyd
+venv/
+env/
+ENV/
+.venv/
+pip-wheel-metadata/
+*.egg-info/
+
+# IDEs and editors
+.idea/
+*.iml
+.vscode/
+*.code-workspace
+*.sublime-workspace
+*.sublime-project
+
+# Logs and temp
+*.log
+logs/
+*.tmp
+tmp/
+*.bak
+*.swp
+*.swo
+
+# Certificates and keys
+*.pem
+*.key
+*.crt
