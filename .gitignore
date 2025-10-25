@@ -151,3 +151,4 @@ coverage/
 *.seed.env
 .env
 .env
+.env
