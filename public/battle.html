@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Battle! — Neural Net Neutrality</title>
+  <meta name="description" content="Compare LLM responses side-by-side for any prompt." />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./css/styles.css">
+  <link rel="stylesheet" href="./css/battle.css">
+</head>
+
+<body>
+  <header class="site-header">
+    <div class="container header-inner">
+      <div class="brand">
+        <img src="./assets/logo.svg" alt="Neural Net Neutrality logo" class="logo">
+        <span class="brand-name">Neural Net Neutrality</span>
+      </div>
+      <nav class="nav">
+        <a href="./index.html">Home</a>
+        <a href="./battle.html" class="active">Battle!</a>
+        
+        <a href="#docs">Docs</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="battle-section container">
+      <h1 class="battle-title">Prompt Battle</h1>
+      <p class="battle-subtitle">Enter any prompt below to compare model responses side by side.</p>
+
+      <form id="battle-form" class="battle-form">
+        <textarea id="prompt-input" placeholder="Type your prompt here..." required></textarea>
+        <button type="submit" class="btn primary">Run Battle</button>
+      </form>
+
+      <div id="results" class="battle-results hidden">
+        <div class="model-column">
+          <h2>Model A</h2>
+          <pre id="modelA-output" class="output-box"></pre>
+        </div>
+        <div class="model-column">
+          <h2>Model B</h2>
+          <pre id="modelB-output" class="output-box"></pre>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-inner">
+      <p>© 2025 Neural Net Neutrality — Built for transparency in AI. Data & code open-sourced under an MIT license.</p>
+    </div>
+  </footer>
+
+  <script src="./js/battle.js" defer></script>
+</body>
+</html>
