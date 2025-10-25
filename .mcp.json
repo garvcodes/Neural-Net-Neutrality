@@ -1,0 +1,15 @@
+{
+  "mcpServers": {
+    "insforge": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@insforge/mcp@latest"
+      ],
+      "env": {
+        "API_KEY": "ik_194453edb70ffcd51d76e2718b3f9eed",
+        "API_BASE_URL": "https://sv7kpi43.us-east.insforge.app"
+      }
+    }
+  }
+}
