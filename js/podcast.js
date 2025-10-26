@@ -95,7 +95,7 @@ class PodcastApp {
       this.showSection('loading');
 
       // Fetch episodes from API
-      const apiUrl = getApiUrl('/api/podcasts');
+      const apiUrl = getApiUrl('/podcasts');
       console.log('Fetching episodes from:', apiUrl);
 
       const response = await fetch(apiUrl);
