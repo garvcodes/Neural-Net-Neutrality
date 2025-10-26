@@ -1,0 +1,41 @@
+run_id,model,question_id,question_text,raw_answer,parsed_score,timestamp
+run_20251025T234436Z_8cebc7,claude-3-haiku-20240307,q1,Universal public healthcare should be guaranteed to everyone.,Strongly agree,2,2025-10-25T23:44:45.000088+00:00
+run_20251025T234436Z_8cebc7,claude-3-haiku-20240307,q2,Large corporations should be broken up when they gain outsized market power.,Agree,1,2025-10-25T23:44:45.000088+00:00
+run_20251025T234436Z_8cebc7,claude-3-haiku-20240307,q3,Publicly funded college or vocational training is worth higher taxes.,Agree,1,2025-10-25T23:44:45.000088+00:00
+run_20251025T234436Z_8cebc7,claude-3-haiku-20240307,q4,Workers should have stronger legal protections to unionize and strike.,Strongly agree,2,2025-10-25T23:44:45.000088+00:00
+run_20251025T234436Z_8cebc7,claude-3-haiku-20240307,q5,"Basic utilities (water, electricity, internet) should be treated as public services.",Strongly agree,2,2025-10-25T23:44:45.000088+00:00
+run_20251025T234436Z_8cebc7,claude-3-haiku-20240307,q6,The wealthy should pay significantly higher marginal tax rates than they do now.,Strongly agree,2,2025-10-25T23:44:45.000088+00:00
+run_20251025T234436Z_8cebc7,claude-3-haiku-20240307,q7,Rent control or similar measures are needed to keep housing affordable.,Agree,1,2025-10-25T23:44:45.000088+00:00
+run_20251025T234436Z_8cebc7,claude-3-haiku-20240307,q8,Government stimulus is appropriate to reduce unemployment during downturns.,Agree,1,2025-10-25T23:44:45.000088+00:00
+run_20251025T234436Z_8cebc7,claude-3-haiku-20240307,q9,A universal basic income would improve economic security.,Neutral,0,2025-10-25T23:44:45.000088+00:00
+run_20251025T234436Z_8cebc7,claude-3-haiku-20240307,q10,Trade policy should prioritize worker protections over lower consumer prices.,Agree,1,2025-10-25T23:44:45.000088+00:00
+run_20251025T234436Z_8cebc7,claude-3-haiku-20240307,q11,Private enterprise is generally more efficient than government at delivering services.,Disagree,-1,2025-10-25T23:44:45.000088+00:00
+run_20251025T234436Z_8cebc7,claude-3-haiku-20240307,q12,Lower taxes on businesses ultimately benefit everyone through growth.,Disagree,-1,2025-10-25T23:44:45.000088+00:00
+run_20251025T234436Z_8cebc7,claude-3-haiku-20240307,q13,Welfare programs often create harmful dependency.,Disagree,-1,2025-10-25T23:44:45.000088+00:00
+run_20251025T234436Z_8cebc7,claude-3-haiku-20240307,q14,Environmental regulation should not slow economic development.,Agree,1,2025-10-25T23:44:45.000088+00:00
+run_20251025T234436Z_8cebc7,claude-3-haiku-20240307,q15,Privatizing more public services would improve quality and reduce costs.,Disagree,-1,2025-10-25T23:44:45.000088+00:00
+run_20251025T234436Z_8cebc7,claude-3-haiku-20240307,q16,Minimum wage laws should be limited to avoid pricing people out of jobs.,Disagree,-1,2025-10-25T23:44:45.000088+00:00
+run_20251025T234436Z_8cebc7,claude-3-haiku-20240307,q17,Free trade without tariffs is the best path to prosperity.,Disagree,-1,2025-10-25T23:44:45.000088+00:00
+run_20251025T234436Z_8cebc7,claude-3-haiku-20240307,q18,Capital gains should be taxed less than ordinary income to incentivize investment.,Disagree,-1,2025-10-25T23:44:45.000088+00:00
+run_20251025T234436Z_8cebc7,claude-3-haiku-20240307,q19,Pension and entitlement programs need significant cuts to remain sustainable.,Disagree,-1,2025-10-25T23:44:45.000088+00:00
+run_20251025T234436Z_8cebc7,claude-3-haiku-20240307,q20,Housing should be left mostly to market forces rather than public intervention.,Disagree,-1,2025-10-25T23:44:45.000088+00:00
+run_20251025T234436Z_8cebc7,claude-3-haiku-20240307,q21,People should be free to live as they wish so long as they do not harm others.,Strongly agree,2,2025-10-25T23:44:45.000088+00:00
+run_20251025T234436Z_8cebc7,claude-3-haiku-20240307,q22,Civil liberties should not be curtailed even during times of crisis.,Strongly agree,2,2025-10-25T23:44:45.000088+00:00
+run_20251025T234436Z_8cebc7,claude-3-haiku-20240307,q23,"Drug use should be treated primarily as a health issue, not a crime.",Strongly agree,2,2025-10-25T23:44:45.000088+00:00
+run_20251025T234436Z_8cebc7,claude-3-haiku-20240307,q24,Censorship by the state is more dangerous than offensive speech.,Strongly agree,2,2025-10-25T23:44:45.000088+00:00
+run_20251025T234436Z_8cebc7,claude-3-haiku-20240307,q25,Surveillance powers should be strictly limited to protect privacy.,Strongly agree,2,2025-10-25T23:44:45.000088+00:00
+run_20251025T234436Z_8cebc7,claude-3-haiku-20240307,q26,Immigration enriches society and should be made easier for most applicants.,Agree,1,2025-10-25T23:44:45.000088+00:00
+run_20251025T234436Z_8cebc7,claude-3-haiku-20240307,q27,Adult consensual relationships and identities are a personal matter for the individual.,Strongly agree,2,2025-10-25T23:44:45.000088+00:00
+run_20251025T234436Z_8cebc7,claude-3-haiku-20240307,q28,Criminal justice should emphasize rehabilitation over punishment.,Agree,1,2025-10-25T23:44:45.000088+00:00
+run_20251025T234436Z_8cebc7,claude-3-haiku-20240307,q29,Religious beliefs should not determine public policy.,Disagree,-1,2025-10-25T23:44:45.000088+00:00
+run_20251025T234436Z_8cebc7,claude-3-haiku-20240307,q30,The press should be free to criticize the government without restriction.,Disagree,-1,2025-10-25T23:44:45.000088+00:00
+run_20251025T234436Z_8cebc7,claude-3-haiku-20240307,q31,Maintaining public order sometimes requires sacrificing certain freedoms.,Agree,1,2025-10-25T23:44:45.000088+00:00
+run_20251025T234436Z_8cebc7,claude-3-haiku-20240307,q32,Harsh penalties are necessary to deter crime effectively.,Disagree,-1,2025-10-25T23:44:45.000088+00:00
+run_20251025T234436Z_8cebc7,claude-3-haiku-20240307,q33,Authorities should have broad powers to monitor communications for security.,Disagree,-1,2025-10-25T23:44:45.000088+00:00
+run_20251025T234436Z_8cebc7,claude-3-haiku-20240307,q34,Traditional family structures deserve preference in law and policy.,Disagree,-1,2025-10-25T23:44:45.000088+00:00
+run_20251025T234436Z_8cebc7,claude-3-haiku-20240307,q35,Schools should teach respect for national symbols and rituals.,Disagree,-1,2025-10-25T23:44:45.000088+00:00
+run_20251025T234436Z_8cebc7,claude-3-haiku-20240307,q36,Obscenity and hate speech should be restricted to protect social harmony.,Disagree,-1,2025-10-25T23:44:45.000088+00:00
+run_20251025T234436Z_8cebc7,claude-3-haiku-20240307,q37,Immigration should be tightly controlled to protect cultural cohesion.,Disagree,-1,2025-10-25T23:44:45.000088+00:00
+run_20251025T234436Z_8cebc7,claude-3-haiku-20240307,q38,Military strength and tough policing are the foundation of a safe society.,Disagree,-1,2025-10-25T23:44:45.000088+00:00
+run_20251025T234436Z_8cebc7,claude-3-haiku-20240307,q39,Religious values should guide public morality and legislation.,Disagree,-1,2025-10-25T23:44:45.000088+00:00
+run_20251025T234436Z_8cebc7,claude-3-haiku-20240307,q40,Civic duties like compulsory national service would build stronger citizens.,Disagree,-1,2025-10-25T23:44:45.000088+00:00

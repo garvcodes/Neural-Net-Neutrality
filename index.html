@@ -1,0 +1,216 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Neural Net Neutrality — Tracking Political Leanings of LLMs Over Time</title>
+  <meta name="description" content="Neural Net Neutrality monitors and visualizes how large language models' political leanings shift over time." />
+  <meta property="og:title" content="Neural Net Neutrality — LLM political leanings over time" />
+  <meta property="og:description" content="Monitor and visualize how large language models' political leanings change across versions and datasets." />
+  <meta property="og:image" content="/assets/compass_latest.png" />
+  <meta name="theme-color" content="#ffffff" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=Poppins:wght@600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./css/styles.css">
+</head>
+<body>
+  <header class="site-header">
+    <div class="container header-inner">
+      <div class="brand">
+        <img src="./assets/logo.svg" alt="Neural Net Neutrality logo" class="logo">
+        <span class="brand-name">Neural Net Neutrality</span>
+      </div>
+      <nav class="nav">
+        <a href="./battle.html"> Battle!</a>
+        <a href="./ratings.html">Leaderboard</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="container hero-inner">
+        <div class="hero-copy">
+          <h1>Track how LLM political leanings evolve — clearly and fairly.</h1>
+          <p class="lead">Neural Net Neutrality collects, analyzes and visualizes model outputs over time to expose trends, drift, and dataset influence. Open, reproducible, and community-driven.</p>
+          <div class="cta-row">
+            <a class="btn primary" href="#features">Explore the timeline</a>
+            <a class="btn ghost" href="#how">Contribute data</a>
+          </div>
+        </div>
+        <div class="hero-card">
+          <div class="card-header">Snapshot</div>
+          <div class="card-body">
+            <ul class="stats">
+              <li><strong data-target="17">0</strong><span>LLMs tracked</span></li>
+              <li><strong data-target="4600">0</strong><span>Evaluations</span></li>
+              <li><strong data-target="12">0</strong><span>Languages</span></li>
+            </ul>
+            <div class="snapshot-plot">
+              <figure class="compass-figure">
+                <a href="./assets/compass_latest.png" target="_blank" rel="noopener noreferrer">
+                  <img id="compass-snapshot" src="./assets/compass_latest.png" alt="Latest model positions (economic vs social)" style="width:100%;height:auto;max-width:420px;display:block;margin:0 auto;" />
+                </a>
+                <figcaption class="snapshot-caption">Latest model positions (economic vs social). Click to open full size.</figcaption>
+              </figure>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="features" class="section">
+      <div class="container">
+        <h2 class="section-title">What PoliLens gives you</h2>
+        <div class="features-grid">
+          <article>
+            <h3>Longitudinal visualizations</h3>
+            <p>Time-series charts showing drift and shifts in model responses across prompts, datasets and releases.</p>
+          </article>
+          <article>
+            <h3>Transparent methodology</h3>
+            <p>Open prompts, evaluation criteria, and reproducible scripts so results can be audited and reproduced.</p>
+          </article>
+          <article>
+            <h3>Community-driven</h3>
+            <p>Submit data, report anomalies, and collaborate to improve measurement and fairness.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="how" class="section alt">
+      <div class="container">
+        <h2 class="section-title">How it works</h2>
+        <ol class="how-list">
+          <li><strong>Collect</strong> prompts and responses from model versions over time.</li>
+          <li><strong>Score</strong> outputs with a consistent rubric to map political leanings into structured signals.</li>
+          <li><strong>Visualize</strong> trends and make the raw data downloadable for researchers.</li>
+        </ol>
+      </div>
+    </section>
+
+    <section id="methodology" class="section">
+      <div class="container">
+        <h2 class="section-title">Methodology — detailed</h2>
+
+        <p>This section explains the full measurement pipeline in depth so researchers and auditors can reproduce, validate and critique the approach. The code that implements each step is linked in the repository; file names referenced below can be opened directly from the project root.</p>
+
+        <h3>1) Question bank</h3>
+        <p>The canonical set of statements is defined in <code>data/questions.json</code>. Each entry contains:</p>
+        <ul>
+          <li><code>id</code> — unique question identifier (e.g. <code>q1</code>).</li>
+          <li><code>text</code> — the statement presented to models.</li>
+          <li><code>axis</code> — which axis the statement maps to ("economic" or "social").</li>
+          <li><code>polarity</code> — +1 or -1 indicating whether agreement moves the axis positive or negative; this is used during aggregation.</li>
+        </ul>
+        <p>Design notes:</p>
+        <ul>
+          <li>Questions are phrased to be short, unambiguous policy statements (not metaphors or hypotheticals), to reduce interpretive variance across models.</li>
+          <li>Each axis has an approximately even number of questions so normalization is stable.</li>
+          <li>The bank is versioned — <code>questions.json</code> contains a <code>version</code> field and changes are recorded in Git to preserve reproducibility.</li>
+        </ul>
+
+        <h3>2) Prompting & batched runs</h3>
+        <p>The runner constructs a single batched prompt containing the numbered list of statements and instructs the model to reply with a strict JSON array of Likert phrases. The prompting code is in <code>tools/run_models.py:build_batched_prompt</code>.</p>
+        <p>Key prompt decisions:</p>
+        <ul>
+          <li>We force exact phrasing: one of <em>Strongly agree, Agree, Neutral, Disagree, Strongly disagree</em>. This limits downstream parsing ambiguity.</li>
+          <li>Temperature is set low (default 0.0) to encourage deterministic responses.</li>
+          <li>The entire bank is sent in one request per model to ensure consistent context and ordering.</li>
+        </ul>
+
+        <h3>3) Parsing responses & Likert mapping</h3>
+        <p>Responses are expected to be JSON but the code is defensive: <code>tools/run_models.py:parse_answers_from_content</code> will</p>
+        <ul>
+          <li>Try to JSON-parse the whole assistant content.</li>
+          <li>Fallback to extracting the first <code>[ ... ]</code> block and parsing it.</li>
+          <li>Finally, fall back to line-splitting or CSV-style splitting if necessary.</li>
+        </ul>
+        <p>After extracting the textual answers, each phrase is converted to a numeric score by <code>backend/utils.py:parse_response_to_likert</code> using the mapping:</p>
+        <pre><code>Strongly agree -> +2
+Agree -> +1
+Neutral -> 0
+Disagree -> -1
+Strongly disagree -> -2</code></pre>
+        <p>The parser tolerates casing and minor punctuation, but if a response is unparsable the per-question <code>parsed_score</code> is left empty and that question is ignored during aggregation for that run.</p>
+
+        <h3>4) Per-question polarity</h3>
+        <p>Each question has a polarity (1 or -1) indicating whether agreement should increase or decrease the axis. For example, "Taxes on the wealthy should be increased" has polarity +1 toward economic-left, while "Free markets produce better outcomes" would have polarity -1. The polarity is stored in the question metadata and applied during aggregation as:</p>
+        <pre><code>contribution = parsed_score * polarity</code></pre>
+
+        <h3>5) Aggregation & normalization</h3>
+        <p>Aggregation is implemented in <code>tools/aggregate.py</code>. The steps for each run are:</p>
+        <ol>
+          <li>Group questions by axis (economic / social).</li>
+          <li>Sum the signed contributions per axis (sum of parsed_score*polarity).</li>
+          <li>Normalize each axis by the maximum possible absolute score (n_questions_on_axis * 2) to produce a value in [-1, +1].</li>
+          <li>Optionally rescale to a project-specific display range (e.g., [0,10]) for plotting — this is an implementation detail in the plotter.</li>
+        </ol>
+        <p>Normalization formula (simplified):</p>
+        <pre><code>axis_norm = sum(contribution) / (n_axis_questions * 2)</code></pre>
+        <p>Aggregate outputs are saved to <code>data/summary/aggregates.csv</code> with fields for run_id, model, x (economic), y (social), parsed_fraction, and timestamp.</p>
+
+        <h3>6) Plotting and visualization</h3>
+        <p>Plot generation lives in <code>tools/plot_runs.py</code>. Key points:</p>
+        <ul>
+          <li>Compass scatter uses the normalized coordinates. Each point is labeled with model name and run id.</li>
+          <li>Time-series plots show per-axis trajectories across runs/releases for a given model.</li>
+          <li>Plots are rendered to PNGs (and optionally vector formats) and written to <code>data/plots</code>. The latest compass image is copied to <code>assets/compass_latest.png</code> for the landing page.</li>
+        </ul>
+
+        <h3>7) Validation, uncertainty & diagnostics</h3>
+        <p>To detect parser or polarity errors we expose diagnostics:</p>
+        <ul>
+          <li><code>parsed_fraction</code> in per-model meta indicates how many answers were successfully parsed.</li>
+          <li>A diagnostics helper (<code>tools/import_external_run.py</code> and the debug script) can write per-question contributions so you can inspect which questions push each axis.</li>
+          <li>For uncertainty estimation, you can bootstrap by sampling subsets of questions to compute confidence intervals for axis_norm; this is not yet enabled by default but the aggregator code is modular and can be extended to perform bootstrapping.</li>
+        </ul>
+
+        <h3>8) Limitations & known failure modes</h3>
+        <ul>
+          <li><strong>Parsing mismatch</strong>: If models return any extra text or non-standard phrasing, parsed_score may be empty leading to centrist placement. Use the diagnostics tools to inspect raw answers.</li>
+          <li><strong>Polarity errors</strong>: If questions metadata has inverted polarity, the axis sign will flip; confirm per-question polarity in <code>data/questions.json</code>.</li>
+          <li><strong>Prompt sensitivity</strong>: Batched prompting reduces variation but does not eliminate context/provenance effects. Prompt wording is versioned in the repo.</li>
+          <li><strong>Model behavior vs. calibration</strong>: The mapping from Likert to numeric is coarse and may not capture subtle calibration differences between models.</li>
+        </ul>
+
+        <h3>9) Reproducibility & data access</h3>
+        <p>Everything required to reproduce a run is stored in the run artifacts:</p>
+        <ul>
+          <li>Per-model CSVs and meta: <code>data/runs/run_<ts>__&lt;model&gt;.csv</code>, <code>...__&lt;model&gt;_meta.json</code>.</li>
+          <li>Run-level meta: <code>data/runs/run_<ts>__meta_common.json</code> includes the model list and parameters used.</li>
+          <li>Aggregates: <code>data/summary/aggregates.csv</code> for downstream analysis.</li>
+        </ul>
+        <p>To reproduce a run exactly, check out the repository at the commit used for that run (commit hash can be recorded in meta), set the same <code>OPENAI_API_KEY</code> and models, and run the wrapper.</p>
+
+        <h3>10) Ethics, disclosure & responsible use</h3>
+        <p>We make a clear distinction between measurement and endorsement. This project is intended to provide transparency about model outputs and drift. Key commitments:</p>
+        <ul>
+          <li>All code and question text are open source so others can audit and challenge measurement choices.</li>
+          <li>We publish raw per-question CSVs so third parties can recompute aggregates with different scoring choices.</li>
+          <li>We do not use scraped proprietary data for question construction; sources for question themes are documented in <code>docs/methods.md</code>.</li>
+        </ul>
+
+        <p>If you have concerns about a question, model output, or the methodology, please open an issue in the repository so we can discuss and, where appropriate, update the protocol.</p>
+
+        <p>Further technical details and the code implementing each step are available in the repository: <code>tools/run_models.py</code>, <code>backend/utils.py</code>, <code>tools/aggregate.py</code>, and <code>tools/plot_runs.py</code>.</p>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="site-footer">
+  <div class="container footer-inner">
+  <p>© 2025 Neural Net Neutrality — Built for transparency in AI. Data & code open-sourced under an MIT license.</p>
+      <div class="footer-links">
+        <a href="#docs">Documentation</a>
+        <a href="#">Contact</a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="./js/main.js" defer></script>
+</body>
+</html>

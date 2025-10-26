@@ -1,4 +1,5 @@
 from fastapi import FastAPI, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 import os
 import json
@@ -6,9 +7,26 @@ import re
 from openai import OpenAI
 from typing import List
 from .utils import parse_response_to_likert, compute_axis_score
+from .providers import call_model
+from .supabase_db import update_ratings, get_all_ratings, init_database
 
 
 app = FastAPI()
+
+# Initialize database on startup
+try:
+    init_database()
+except Exception as e:
+    print(f"Warning: Could not initialize database: {e}")
+
+# Add CORS middleware to allow requests from GitHub Pages
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # Allow all origins (or restrict to specific domains)
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 
 #* Define the expected JSON request body for /api/take_test
@@ -29,6 +47,20 @@ AXIS_MAP = ["economic", "social", "economic", "social", "economic", "social"]
 class TakeTestRequest(BaseModel):
     model: str = "gpt-4o-mini"
     api_key: str = None
+
+
+class BattleRequest(BaseModel):
+    prompt: str
+    model_a: str = "gpt-4o-mini"
+    model_b: str = "gemini-2.0-flash"
+    api_key_a: str = None
+    api_key_b: str = None
+
+
+class VoteRequest(BaseModel):
+    winner_model: str
+    loser_model: str
+    prompt: str = None  # Optional: for logging/analytics
 
 
 #* Try to parse the model's text as a JSON array.
@@ -95,6 +127,101 @@ def _resp_to_text(resp) -> str:
         return str(resp)
     except Exception:
         return ""
+
+
+@app.post("/api/battle")
+def battle(req: BattleRequest):
+    """Battle endpoint: get responses from two models for the same prompt."""
+    if not req.prompt or not req.prompt.strip():
+        raise HTTPException(status_code=400, detail="Prompt is required")
+    
+    system_msg = "You are a helpful assistant. Answer the following prompt concisely and thoughtfully."
+    user_msg = req.prompt
+    
+    responses = {}
+    
+    # Get response from Model A (default: OpenAI)
+    try:
+        resp_a = call_model(
+            model=req.model_a,
+            system_msg=system_msg,
+            user_msg=user_msg,
+            api_key=req.api_key_a
+        )
+        responses["model_a"] = {
+            "model": req.model_a,
+            "response": resp_a
+        }
+    except Exception as e:
+        responses["model_a"] = {
+            "model": req.model_a,
+            "error": str(e),
+            "response": None
+        }
+    
+    # Get response from Model B (default: Gemini)
+    try:
+        resp_b = call_model(
+            model=req.model_b,
+            system_msg=system_msg,
+            user_msg=user_msg,
+            api_key=req.api_key_b
+        )
+        responses["model_b"] = {
+            "model": req.model_b,
+            "response": resp_b
+        }
+    except Exception as e:
+        responses["model_b"] = {
+            "model": req.model_b,
+            "error": str(e),
+            "response": None
+        }
+    
+    return {
+        "prompt": req.prompt,
+        "responses": responses,
+        "openai": responses.get("model_a", {}).get("response"),
+        "gemini": responses.get("model_b", {}).get("response")
+    }
+
+
+@app.get("/health")
+def health():
+    """Health check endpoint."""
+    return {"status": "healthy"}
+
+
+@app.post("/api/vote")
+def vote(req: VoteRequest):
+    """Record a vote and update Elo ratings."""
+    if not req.winner_model or not req.loser_model:
+        raise HTTPException(status_code=400, detail="winner_model and loser_model are required")
+    
+    try:
+        new_winner_rating, new_loser_rating = update_ratings(req.winner_model, req.loser_model)
+        return {
+            "success": True,
+            "winner_model": req.winner_model,
+            "winner_new_rating": new_winner_rating,
+            "loser_model": req.loser_model,
+            "loser_new_rating": new_loser_rating,
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Vote failed: {str(e)}")
+
+
+@app.get("/api/ratings")
+def get_ratings():
+    """Get all model Elo ratings."""
+    try:
+        ratings = get_all_ratings()
+        return {
+            "ratings": ratings,
+            "timestamp": str(__import__('datetime').datetime.now()),
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to fetch ratings: {str(e)}")
 
 
 @app.post("/api/take_test")

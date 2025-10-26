@@ -1,0 +1,41 @@
+run_id,model,question_id,question_text,raw_answer,parsed_score,timestamp
+run_20251025T234436Z_8cebc7,claude-3-sonnet-20240229,q1,Universal public healthcare should be guaranteed to everyone.,(error calling model: Error code: 404 - {'type': 'error',,2025-10-25T23:44:47.150893+00:00
+run_20251025T234436Z_8cebc7,claude-3-sonnet-20240229,q2,Large corporations should be broken up when they gain outsized market power.,error': {'type': 'not_found_error,,2025-10-25T23:44:47.150893+00:00
+run_20251025T234436Z_8cebc7,claude-3-sonnet-20240229,q3,Publicly funded college or vocational training is worth higher taxes.,'message': 'model: claude-3-sonnet-20240229'},0,2025-10-25T23:44:47.150893+00:00
+run_20251025T234436Z_8cebc7,claude-3-sonnet-20240229,q4,Workers should have stronger legal protections to unionize and strike.,'request_id': 'req_011CUUohWv7Ddwv4Kz4GYCL3'}),,2025-10-25T23:44:47.150893+00:00
+run_20251025T234436Z_8cebc7,claude-3-sonnet-20240229,q5,"Basic utilities (water, electricity, internet) should be treated as public services.",,,2025-10-25T23:44:47.150893+00:00
+run_20251025T234436Z_8cebc7,claude-3-sonnet-20240229,q6,The wealthy should pay significantly higher marginal tax rates than they do now.,,,2025-10-25T23:44:47.150893+00:00
+run_20251025T234436Z_8cebc7,claude-3-sonnet-20240229,q7,Rent control or similar measures are needed to keep housing affordable.,,,2025-10-25T23:44:47.150893+00:00
+run_20251025T234436Z_8cebc7,claude-3-sonnet-20240229,q8,Government stimulus is appropriate to reduce unemployment during downturns.,,,2025-10-25T23:44:47.150893+00:00
+run_20251025T234436Z_8cebc7,claude-3-sonnet-20240229,q9,A universal basic income would improve economic security.,,,2025-10-25T23:44:47.150893+00:00
+run_20251025T234436Z_8cebc7,claude-3-sonnet-20240229,q10,Trade policy should prioritize worker protections over lower consumer prices.,,,2025-10-25T23:44:47.150893+00:00
+run_20251025T234436Z_8cebc7,claude-3-sonnet-20240229,q11,Private enterprise is generally more efficient than government at delivering services.,,,2025-10-25T23:44:47.150893+00:00
+run_20251025T234436Z_8cebc7,claude-3-sonnet-20240229,q12,Lower taxes on businesses ultimately benefit everyone through growth.,,,2025-10-25T23:44:47.150893+00:00
+run_20251025T234436Z_8cebc7,claude-3-sonnet-20240229,q13,Welfare programs often create harmful dependency.,,,2025-10-25T23:44:47.150893+00:00
+run_20251025T234436Z_8cebc7,claude-3-sonnet-20240229,q14,Environmental regulation should not slow economic development.,,,2025-10-25T23:44:47.150893+00:00
+run_20251025T234436Z_8cebc7,claude-3-sonnet-20240229,q15,Privatizing more public services would improve quality and reduce costs.,,,2025-10-25T23:44:47.150893+00:00
+run_20251025T234436Z_8cebc7,claude-3-sonnet-20240229,q16,Minimum wage laws should be limited to avoid pricing people out of jobs.,,,2025-10-25T23:44:47.150893+00:00
+run_20251025T234436Z_8cebc7,claude-3-sonnet-20240229,q17,Free trade without tariffs is the best path to prosperity.,,,2025-10-25T23:44:47.150893+00:00
+run_20251025T234436Z_8cebc7,claude-3-sonnet-20240229,q18,Capital gains should be taxed less than ordinary income to incentivize investment.,,,2025-10-25T23:44:47.150893+00:00
+run_20251025T234436Z_8cebc7,claude-3-sonnet-20240229,q19,Pension and entitlement programs need significant cuts to remain sustainable.,,,2025-10-25T23:44:47.150893+00:00
+run_20251025T234436Z_8cebc7,claude-3-sonnet-20240229,q20,Housing should be left mostly to market forces rather than public intervention.,,,2025-10-25T23:44:47.150893+00:00
+run_20251025T234436Z_8cebc7,claude-3-sonnet-20240229,q21,People should be free to live as they wish so long as they do not harm others.,,,2025-10-25T23:44:47.150893+00:00
+run_20251025T234436Z_8cebc7,claude-3-sonnet-20240229,q22,Civil liberties should not be curtailed even during times of crisis.,,,2025-10-25T23:44:47.150893+00:00
+run_20251025T234436Z_8cebc7,claude-3-sonnet-20240229,q23,"Drug use should be treated primarily as a health issue, not a crime.",,,2025-10-25T23:44:47.150893+00:00
+run_20251025T234436Z_8cebc7,claude-3-sonnet-20240229,q24,Censorship by the state is more dangerous than offensive speech.,,,2025-10-25T23:44:47.150893+00:00
+run_20251025T234436Z_8cebc7,claude-3-sonnet-20240229,q25,Surveillance powers should be strictly limited to protect privacy.,,,2025-10-25T23:44:47.150893+00:00
+run_20251025T234436Z_8cebc7,claude-3-sonnet-20240229,q26,Immigration enriches society and should be made easier for most applicants.,,,2025-10-25T23:44:47.150893+00:00
+run_20251025T234436Z_8cebc7,claude-3-sonnet-20240229,q27,Adult consensual relationships and identities are a personal matter for the individual.,,,2025-10-25T23:44:47.150893+00:00
+run_20251025T234436Z_8cebc7,claude-3-sonnet-20240229,q28,Criminal justice should emphasize rehabilitation over punishment.,,,2025-10-25T23:44:47.150893+00:00
+run_20251025T234436Z_8cebc7,claude-3-sonnet-20240229,q29,Religious beliefs should not determine public policy.,,,2025-10-25T23:44:47.150893+00:00
+run_20251025T234436Z_8cebc7,claude-3-sonnet-20240229,q30,The press should be free to criticize the government without restriction.,,,2025-10-25T23:44:47.150893+00:00
+run_20251025T234436Z_8cebc7,claude-3-sonnet-20240229,q31,Maintaining public order sometimes requires sacrificing certain freedoms.,,,2025-10-25T23:44:47.150893+00:00
+run_20251025T234436Z_8cebc7,claude-3-sonnet-20240229,q32,Harsh penalties are necessary to deter crime effectively.,,,2025-10-25T23:44:47.150893+00:00
+run_20251025T234436Z_8cebc7,claude-3-sonnet-20240229,q33,Authorities should have broad powers to monitor communications for security.,,,2025-10-25T23:44:47.150893+00:00
+run_20251025T234436Z_8cebc7,claude-3-sonnet-20240229,q34,Traditional family structures deserve preference in law and policy.,,,2025-10-25T23:44:47.150893+00:00
+run_20251025T234436Z_8cebc7,claude-3-sonnet-20240229,q35,Schools should teach respect for national symbols and rituals.,,,2025-10-25T23:44:47.150893+00:00
+run_20251025T234436Z_8cebc7,claude-3-sonnet-20240229,q36,Obscenity and hate speech should be restricted to protect social harmony.,,,2025-10-25T23:44:47.150893+00:00
+run_20251025T234436Z_8cebc7,claude-3-sonnet-20240229,q37,Immigration should be tightly controlled to protect cultural cohesion.,,,2025-10-25T23:44:47.150893+00:00
+run_20251025T234436Z_8cebc7,claude-3-sonnet-20240229,q38,Military strength and tough policing are the foundation of a safe society.,,,2025-10-25T23:44:47.150893+00:00
+run_20251025T234436Z_8cebc7,claude-3-sonnet-20240229,q39,Religious values should guide public morality and legislation.,,,2025-10-25T23:44:47.150893+00:00
+run_20251025T234436Z_8cebc7,claude-3-sonnet-20240229,q40,Civic duties like compulsory national service would build stronger citizens.,,,2025-10-25T23:44:47.150893+00:00

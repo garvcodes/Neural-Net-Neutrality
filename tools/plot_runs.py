@@ -14,7 +14,12 @@ import os
 from datetime import datetime
 import argparse
 import pandas as pd
+import matplotlib
+matplotlib.use("Agg")  # must be before importing pyplot
+
 import matplotlib.pyplot as plt
+# ...rest of your imports
+
 
 
 def parse_run_timestamp(run_id: str) -> datetime:
