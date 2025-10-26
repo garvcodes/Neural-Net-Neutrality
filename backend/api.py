@@ -8,10 +8,16 @@ from openai import OpenAI
 from typing import List
 from .utils import parse_response_to_likert, compute_axis_score
 from .providers import call_model
-from .elo import update_ratings, get_all_ratings
+from .supabase_db import update_ratings, get_all_ratings, init_database
 
 
 app = FastAPI()
+
+# Initialize database on startup
+try:
+    init_database()
+except Exception as e:
+    print(f"Warning: Could not initialize database: {e}")
 
 # Add CORS middleware to allow requests from GitHub Pages
 app.add_middleware(
