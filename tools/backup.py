@@ -19,6 +19,32 @@ import glob
 from datetime import datetime
 import json
 
+# main.py
+from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
+from supabase_db import get_all_ratings
+
+app = FastAPI()
+
+# Enable CORS so frontend can access
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # or restrict to your domain
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+@app.get("/api/ratings")
+def fetch_ratings():
+    """Return all model ratings as JSON."""
+    try:
+        ratings = get_all_ratings()
+        return {"success": True, "data": ratings}
+    except Exception as e:
+        return {"success": False, "error": str(e)}
+
+
 
 def backup_data(backup_dir='backups', compress=False, retention_days=None):
     """
