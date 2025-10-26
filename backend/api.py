@@ -614,12 +614,16 @@ def get_podcasts(limit: int = 10):
             from datetime import timedelta
             episode_date = (datetime.now() - timedelta(days=date_offset)).strftime("%Y-%m-%d")
             
+            # Use a real public audio file for testing
+            # This is a ~3 minute sample audio from archive.org
+            sample_audio_url = "https://archive.org/download/testmp3testfile/mpthreetest.mp3"
+            
             episode = {
                 "id": f"episode_{i+1}",
                 "title": title,
                 "description": "Your daily AI-generated neutral news podcast covering the latest in AI and politics",
                 "publication_date": episode_date,
-                "audio_url": f"https://example.com/podcast_{i+1}.mp3",
+                "audio_url": sample_audio_url,  # Real audio file for testing
                 "duration_seconds": 180,
                 "cover_image_url": "https://images.unsplash.com/photo-1478737270239-2f02b77fc618?w=800&q=80",
                 "play_count": 0
@@ -644,12 +648,15 @@ def get_latest_podcast():
         today = datetime.now().strftime("%Y-%m-%d")
         title = f"Daily Brief - {datetime.now().strftime('%B %d, %Y')}"
         
+        # Use a real public audio file for testing
+        sample_audio_url = "https://archive.org/download/testmp3testfile/mpthreetest.mp3"
+        
         episode = {
             "id": "episode_latest",
             "title": title,
             "description": "Your daily AI-generated neutral news podcast",
             "publication_date": today,
-            "audio_url": "https://example.com/podcast_latest.mp3",
+            "audio_url": sample_audio_url,  # Real audio file for testing
             "duration_seconds": 180,
             "cover_image_url": "https://images.unsplash.com/photo-1478737270239-2f02b77fc618?w=800&q=80",
             "play_count": 0
