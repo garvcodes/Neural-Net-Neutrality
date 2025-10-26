@@ -12,12 +12,23 @@ from typing import Optional, Dict, List
 import psycopg2
 from psycopg2.extras import RealDictCursor
 import json
+from urllib.parse import quote_plus
 
 # Get connection details from environment
-DATABASE_URL = os.environ.get(
-    "DATABASE_URL",
-    "postgresql://postgres:AwwQ%40dKRuVmkR4Z@db.tvsyvfkereavzztcmkkq.supabase.co:5432/postgres"
-)
+# Format: postgresql://user:password@host:port/database
+DATABASE_URL = os.environ.get("DATABASE_URL")
+
+if not DATABASE_URL:
+    # Fallback: construct from individual env vars if DATABASE_URL not set
+    db_user = os.environ.get("DB_USER", "postgres")
+    db_password = os.environ.get("DB_PASSWORD", "")
+    db_host = os.environ.get("DB_HOST", "db.tvsyvfkereavzztcmkkq.supabase.co")
+    db_port = os.environ.get("DB_PORT", "5432")
+    db_name = os.environ.get("DB_NAME", "postgres")
+    
+    # URL encode the password if it contains special characters
+    encoded_password = quote_plus(db_password)
+    DATABASE_URL = f"postgresql://{db_user}:{encoded_password}@{db_host}:{db_port}/{db_name}"
 
 def get_db_connection():
     """Create and return a database connection."""

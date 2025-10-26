@@ -7,34 +7,8 @@ document.addEventListener("DOMContentLoaded", () => {
   const outputB = document.getElementById("modelB-output");
   const voteA = document.getElementById("vote-a");
   const voteB = document.getElementById("vote-b");
-  const modelASelect = document.getElementById("model-a-select");
-  const modelBSelect = document.getElementById("model-b-select");
-  const modelALabel = document.getElementById("model-a-label");
-  const modelBLabel = document.getElementById("model-b-label");
 
   let currentPrompt = "";
-  let currentModelA = "gpt-4o-mini";
-  let currentModelB = "gemini-2.0-flash";
-
-  // Update model labels when selection changes
-  modelASelect.addEventListener("change", (e) => {
-    currentModelA = e.target.value;
-    updateModelLabel(modelASelect, modelALabel);
-  });
-
-  modelBSelect.addEventListener("change", (e) => {
-    currentModelB = e.target.value;
-    updateModelLabel(modelBSelect, modelBLabel);
-  });
-
-  function updateModelLabel(selectElement, labelElement) {
-    const selectedText = selectElement.options[selectElement.selectedIndex].text;
-    labelElement.textContent = selectedText;
-  }
-
-  // Initialize labels
-  updateModelLabel(modelASelect, modelALabel);
-  updateModelLabel(modelBSelect, modelBLabel);
 
   // --- Load and display 3 random questions from TSV ---
   fetch("./questions.tsv")
@@ -67,8 +41,8 @@ document.addEventListener("DOMContentLoaded", () => {
     results.classList.remove("hidden");
     outputA.classList.add("loading-text");
     outputB.classList.add("loading-text");
-    outputA.textContent = `Getting response from ${modelALabel.textContent}...`;
-    outputB.textContent = `Getting response from ${modelBLabel.textContent}...`;
+    outputA.textContent = "Getting response from OpenAI...";
+    outputB.textContent = "Getting response from Gemini...";
     voteA.disabled = true;
     voteB.disabled = true;
     voteA.textContent = "Vote: Fairer Response";
@@ -78,11 +52,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const resp = await fetch(`${API_CONFIG.BACKEND_URL}/api/battle`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ 
-          prompt,
-          model_a: currentModelA,
-          model_b: currentModelB,
-        }),
+        body: JSON.stringify({ prompt }),
       });
 
       const data = await resp.json();
@@ -91,8 +61,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
       // Typewriter reveal for both outputs
       await Promise.all([
-        typeWriter(outputA, data.openai || "No response."),
-        typeWriter(outputB, data.gemini || "No response."),
+        typeWriter(outputA, data.openai || "No response from OpenAI."),
+        typeWriter(outputB, data.gemini || "No response from Gemini."),
       ]);
       
       // Enable vote buttons after responses are shown
@@ -109,11 +79,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // --- Vote handlers ---
   voteA.addEventListener("click", async () => {
-    await submitVote(currentModelA, currentModelB, voteA);
+    await submitVote("gpt-4o-mini", "gemini-2.0-flash", voteA);
   });
 
   voteB.addEventListener("click", async () => {
-    await submitVote(currentModelB, currentModelA, voteB);
+    await submitVote("gemini-2.0-flash", "gpt-4o-mini", voteB);
   });
 
   async function submitVote(winnerModel, loserModel, button) {
