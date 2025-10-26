@@ -8,6 +8,7 @@ from openai import OpenAI
 from typing import List
 from .utils import parse_response_to_likert, compute_axis_score
 from .providers import call_model
+from .elo import update_ratings, get_all_ratings
 
 
 app = FastAPI()
@@ -48,6 +49,12 @@ class BattleRequest(BaseModel):
     model_b: str = "gemini-2.0-flash"
     api_key_a: str = None
     api_key_b: str = None
+
+
+class VoteRequest(BaseModel):
+    winner_model: str
+    loser_model: str
+    prompt: str = None  # Optional: for logging/analytics
 
 
 #* Try to parse the model's text as a JSON array.
@@ -177,6 +184,38 @@ def battle(req: BattleRequest):
 def health():
     """Health check endpoint."""
     return {"status": "healthy"}
+
+
+@app.post("/api/vote")
+def vote(req: VoteRequest):
+    """Record a vote and update Elo ratings."""
+    if not req.winner_model or not req.loser_model:
+        raise HTTPException(status_code=400, detail="winner_model and loser_model are required")
+    
+    try:
+        new_winner_rating, new_loser_rating = update_ratings(req.winner_model, req.loser_model)
+        return {
+            "success": True,
+            "winner_model": req.winner_model,
+            "winner_new_rating": new_winner_rating,
+            "loser_model": req.loser_model,
+            "loser_new_rating": new_loser_rating,
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Vote failed: {str(e)}")
+
+
+@app.get("/api/ratings")
+def get_ratings():
+    """Get all model Elo ratings."""
+    try:
+        ratings = get_all_ratings()
+        return {
+            "ratings": ratings,
+            "timestamp": str(__import__('datetime').datetime.now()),
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to fetch ratings: {str(e)}")
 
 
 @app.post("/api/take_test")

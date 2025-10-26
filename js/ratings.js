@@ -1,28 +1,53 @@
 document.addEventListener("DOMContentLoaded", () => {
   const tableBody = document.querySelector("#ratings-table tbody");
+  const statusEl = document.querySelector(".ratings-subtitle") || null;
 
-  // Example data — replace with fetch from your backend
-  const models = [
-    { name: "GPT-5", v1: 1810, v2: 1795, v5: 1820, elo: 1808 },
-    { name: "Claude 3.5", v1: 1780, v2: 1770, v5: 1800, elo: 1783 },
-    { name: "Gemini 2.0", v1: 1760, v2: 1755, v5: 1775, elo: 1763 },
-    { name: "Mistral 8x7B", v1: 1720, v2: 1705, v5: 1730, elo: 1718 },
-    { name: "LLaMA 3.1", v1: 1695, v2: 1675, v5: 1700, elo: 1690 }
-  ];
+  // Fetch live ratings from backend
+  async function loadRatings() {
+    try {
+      const resp = await fetch(`${API_CONFIG.BACKEND_URL}/api/ratings`);
+      const data = await resp.json();
+      
+      const ratings = data.ratings || {};
+      
+      // Convert ratings object to sortable array
+      const models = Object.entries(ratings).map(([model, stats]) => ({
+        name: model,
+        elo: stats.rating || 1600,
+        wins: stats.wins || 0,
+        losses: stats.losses || 0,
+        total: (stats.wins || 0) + (stats.losses || 0),
+      }));
+      
+      // Sort by Elo descending
+      models.sort((a, b) => b.elo - a.elo);
+      
+      // Clear existing rows
+      tableBody.innerHTML = "";
+      
+      // Populate table
+      models.forEach((model, index) => {
+        const row = document.createElement("tr");
+        const winRate = model.total > 0 ? ((model.wins / model.total) * 100).toFixed(1) : "—";
+        row.innerHTML = `
+          <td><strong>${index + 1}. ${model.name}</strong></td>
+          <td>${model.elo.toFixed(0)}</td>
+          <td>${model.wins}</td>
+          <td>${model.losses}</td>
+          <td>${winRate}${winRate !== "—" ? "%" : ""}</td>
+        `;
+        tableBody.appendChild(row);
+      });
+    } catch (err) {
+      console.error("Failed to load ratings:", err);
+      tableBody.innerHTML = `<tr><td colspan="5" style="text-align: center; padding: 2rem;">Failed to load ratings. ${err.message}</td></tr>`;
+    }
+  }
 
-  // Sort descending by Elo
-  models.sort((a, b) => b.elo - a.elo);
-
-  // Populate table
-  models.forEach(model => {
-    const row = document.createElement("tr");
-    row.innerHTML = `
-      <td>${model.name}</td>
-      <td>${model.v1}</td>
-      <td>${model.v2}</td>
-      <td>${model.v5}</td>
-      <td>${model.elo}</td>
-    `;
-    tableBody.appendChild(row);
-  });
+  // Load ratings on page load
+  loadRatings();
+  
+  // Refresh ratings every 10 seconds
+  setInterval(loadRatings, 10000);
 });
+
