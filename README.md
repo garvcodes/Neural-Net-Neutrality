@@ -497,4 +497,4 @@ MIT License - See [`LICENSE`](LICENSE) file for details.
 ---
 
 **Built for transparency in AI.**  
-Last updated: October 25, 2025
+Last updated: October 24, 2025
