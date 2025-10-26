@@ -13,3 +13,7 @@ plotly>=5.0
 streamlit>=1.20
 numpy>=1.26
 matplotlib>=3.8
+# Podcast/TTS features
+elevenlabs>=0.2.5
+pyttsx3>=2.90
+
