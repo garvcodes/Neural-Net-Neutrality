@@ -21,7 +21,7 @@ python -m tools.run_models --models claude-3-haiku-20240307,claude-3-sonnet-2024
 python -m tools.run_models --models gemini-2.0-flash,gemini-1.5-pro --post-aggregate
 
 # View results
-open public/assets/compass_latest.png
+open assets/compass_latest.png
 cat data/summary/aggregates.csv
 
 # Test setup

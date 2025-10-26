@@ -52,7 +52,7 @@ This work contributes to:
    ```bash
    git pull
    ls data/runs/run_*.csv
-   cat public/assets/compass_latest.png  # View latest compass
+   cat assets/compass_latest.png  # View latest compass
    ```
 
 ### Option 2: Local/Self-Hosted
@@ -151,7 +151,6 @@ Neural-Net-Neutrality/
 ├── public/
 │   ├── index.html                         # Landing page
 │   ├── css/styles.css                     # Styling
-│   ├── js/main.js                         # Frontend logic
 │   └── assets/
 │       └── compass_latest.png             # Latest compass
 │
@@ -189,7 +188,7 @@ data/runs/run_20251025T234436Z_abc123__gpt-4o-mini.csv
 data/runs/run_20251025T234436Z_abc123__gpt-4o-mini_meta.json
 data/summary/aggregates.csv
 data/plots/compass_latest.png
-public/assets/compass_latest.png
+assets/compass_latest.png
 ```
 
 ---
@@ -441,9 +440,9 @@ See [`docs/methods.md`](./docs/methods.md) for detailed methodology.
 
 Latest compass visualization (updated daily):
 
-![Latest Compass](public/assets/compass_latest.png?raw=true)
+![Latest Compass](assets/compass_latest.png?raw=true)
 
-View the [interactive dashboard](public/index.html) for real-time results.
+View the interactive dashboard in `index.html`.
 
 ---
 

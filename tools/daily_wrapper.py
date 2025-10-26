@@ -60,17 +60,17 @@ def main(models, api_keys=None, runs_dir='data/runs', summary_out='data/summary/
     aggregate.aggregate_runs(runs_dir, summary_out)
     print('Plotting...')
     plot_runs.main(summary_out, plots_out)
-    # copy latest compass image into public assets for the landing page
+    # copy latest compass image into root assets for the landing page
     try:
         src = os.path.join(plots_out, 'compass_latest.png')
-        dst_dir = os.path.join('public', 'assets')
+        dst_dir = os.path.join('assets')
         os.makedirs(dst_dir, exist_ok=True)
         dst = os.path.join(dst_dir, 'compass_latest.png')
         if os.path.exists(src):
             shutil.copyfile(src, dst)
-            print('Updated public asset:', dst)
+            print('Updated asset:', dst)
     except Exception as e:
-        print('Could not copy compass image to public assets:', e)
+        print('Could not copy compass image to assets:', e)
     print('Done. Run id:', run_id)
     return run_id
 

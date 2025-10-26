@@ -53,7 +53,7 @@ jobs:
           # copy artifacts into the repo workspace (they're already here)
           git add data/plots || true
           git add data/summary || true
-          git add public/assets/compass_latest.png || true
+          git add assets/compass_latest.png || true
           if git diff --staged --quiet; then
             echo "No changes to commit"
           else

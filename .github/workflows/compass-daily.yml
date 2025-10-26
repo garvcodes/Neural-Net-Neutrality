@@ -66,7 +66,7 @@ jobs:
             exit 1
           fi
           
-          if [ -f "public/assets/compass_latest.png" ]; then
+          if [ -f "assets/compass_latest.png" ]; then
             echo "✓ Compass image created"
           else
             echo "✗ Compass image not found!"
@@ -82,7 +82,7 @@ jobs:
           git add data/runs/*.csv data/runs/*_meta*.json
           git add data/summary/aggregates.csv
           git add data/plots/*.png
-          git add public/assets/compass_latest.png
+          git add assets/compass_latest.png
           
           # Commit if there are changes
           if ! git diff-index --quiet HEAD; then

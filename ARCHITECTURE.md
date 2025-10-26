@@ -115,7 +115,7 @@
 │  • Include time-series for trend tracking                       │
 │                                                                  │
 │  Output: data/plots/compass_latest.png                          │
-│         public/assets/compass_latest.png (copy)                │
+│         assets/compass_latest.png (copy)                │
 │                                                                  │
 │  ┌──────────────────────────┐                                   │
 │  │   POLITICAL COMPASS      │                                   │
@@ -132,7 +132,7 @@
                        ▼
          ┌─────────────────────────┐
          │  Landing Page           │
-         │  public/index.html      │
+         │  index.html      │
          │  (display compass)      │
          └─────────────────────────┘
 ```
@@ -201,7 +201,7 @@ Plot three points on compass:
   • claude-3-sonnet @ (+0.22, +0.15)
   • gemini-2.0-flash @ (+0.38, -0.05)
 
-Output: public/assets/compass_latest.png
+Output: assets/compass_latest.png
 ```
 
 ## Key Invariants
