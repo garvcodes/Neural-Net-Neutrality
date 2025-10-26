@@ -15,6 +15,60 @@
   margin-bottom: 2rem;
 }
 
+/* Model Selection */
+.model-selection {
+  display: flex;
+  align-items: flex-end;
+  gap: 1rem;
+  margin-bottom: 2rem;
+  padding: 1.5rem;
+  background: linear-gradient(135deg, #f8f9ff 0%, #f0f1ff 100%);
+  border-radius: 12px;
+  border: 1px solid #e0e7ff;
+}
+
+.model-select-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  flex: 1;
+}
+
+.model-select-group label {
+  font-weight: 600;
+  color: #374151;
+  font-size: 0.95rem;
+}
+
+.model-select {
+  padding: 0.75rem 1rem;
+  font-size: 1rem;
+  border: 2px solid #d1d5db;
+  border-radius: 6px;
+  background: white;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+.model-select:hover {
+  border-color: #4f46e5;
+  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+}
+
+.model-select:focus {
+  outline: none;
+  border-color: #4f46e5;
+  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+}
+
+.vs-divider {
+  font-weight: 700;
+  color: #9ca3af;
+  font-size: 1.2rem;
+  margin-bottom: 0.75rem;
+}
+
 .question-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
@@ -161,6 +215,21 @@
 }
 
 @media (max-width: 768px) {
+  .model-selection {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .model-select-group {
+    width: 100%;
+  }
+
+  .vs-divider {
+    text-align: center;
+    margin-bottom: 0;
+    margin-top: 0.5rem;
+  }
+
   .battle-results {
     grid-template-columns: 1fr;
   }
