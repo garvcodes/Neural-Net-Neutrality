@@ -102,16 +102,23 @@ def _call_openai(
         raise RuntimeError("OPENAI_API_KEY not found in env and no api_key provided")
     
     client = OpenAI(api_key=api_key)
-    resp = client.chat.completions.create(
-        model=model,
-        messages=[
+    
+    # Build request kwargs
+    request_kwargs = {
+        "model": model,
+        "messages": [
             {"role": "system", "content": system_msg},
             {"role": "user", "content": user_msg},
         ],
-        temperature=float(params.get("temperature", 0.0)),
-        max_tokens=int(params.get("max_tokens", 1200)),
-        response_format={"type": "json_object"},  # force valid JSON
-    )
+        "temperature": float(params.get("temperature", 0.0)),
+        "max_tokens": int(params.get("max_tokens", 1200)),
+    }
+    
+    # Only use JSON mode if "json" appears in system or user message
+    if "json" in system_msg.lower() or "json" in user_msg.lower():
+        request_kwargs["response_format"] = {"type": "json_object"}
+    
+    resp = client.chat.completions.create(**request_kwargs)
     return (resp.choices[0].message.content or "").strip()
 
 
