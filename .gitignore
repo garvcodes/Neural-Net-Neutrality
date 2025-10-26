@@ -78,3 +78,6 @@ tmp/
 *.pem
 *.key
 *.crt
+
+# External repositories (don't track as submodule)
+neural-net-neutrality-BE/
