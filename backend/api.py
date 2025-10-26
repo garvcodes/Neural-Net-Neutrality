@@ -6,6 +6,7 @@ import re
 from openai import OpenAI
 from typing import List
 from .utils import parse_response_to_likert, compute_axis_score
+from .providers import call_model
 
 
 app = FastAPI()
@@ -29,6 +30,14 @@ AXIS_MAP = ["economic", "social", "economic", "social", "economic", "social"]
 class TakeTestRequest(BaseModel):
     model: str = "gpt-4o-mini"
     api_key: str = None
+
+
+class BattleRequest(BaseModel):
+    prompt: str
+    model_a: str = "gpt-4o-mini"
+    model_b: str = "gemini-2.0-flash"
+    api_key_a: str = None
+    api_key_b: str = None
 
 
 #* Try to parse the model's text as a JSON array.
@@ -95,6 +104,69 @@ def _resp_to_text(resp) -> str:
         return str(resp)
     except Exception:
         return ""
+
+
+@app.post("/api/battle")
+def battle(req: BattleRequest):
+    """Battle endpoint: get responses from two models for the same prompt."""
+    if not req.prompt or not req.prompt.strip():
+        raise HTTPException(status_code=400, detail="Prompt is required")
+    
+    system_msg = "You are a helpful assistant. Answer the following prompt concisely and thoughtfully."
+    user_msg = req.prompt
+    
+    responses = {}
+    
+    # Get response from Model A (default: OpenAI)
+    try:
+        resp_a = call_model(
+            model=req.model_a,
+            system_msg=system_msg,
+            user_msg=user_msg,
+            api_key=req.api_key_a
+        )
+        responses["model_a"] = {
+            "model": req.model_a,
+            "response": resp_a
+        }
+    except Exception as e:
+        responses["model_a"] = {
+            "model": req.model_a,
+            "error": str(e),
+            "response": None
+        }
+    
+    # Get response from Model B (default: Gemini)
+    try:
+        resp_b = call_model(
+            model=req.model_b,
+            system_msg=system_msg,
+            user_msg=user_msg,
+            api_key=req.api_key_b
+        )
+        responses["model_b"] = {
+            "model": req.model_b,
+            "response": resp_b
+        }
+    except Exception as e:
+        responses["model_b"] = {
+            "model": req.model_b,
+            "error": str(e),
+            "response": None
+        }
+    
+    return {
+        "prompt": req.prompt,
+        "responses": responses,
+        "openai": responses.get("model_a", {}).get("response"),
+        "gemini": responses.get("model_b", {}).get("response")
+    }
+
+
+@app.get("/health")
+def health():
+    """Health check endpoint."""
+    return {"status": "healthy"}
 
 
 @app.post("/api/take_test")
