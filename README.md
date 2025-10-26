@@ -22,7 +22,7 @@ This project exists to answer critical questions about AI alignment and model be
 5. **Bias Detection Methodology**: What is the best approach to measuring political bias in language models using structured, scalable surveys?
 
 This work contributes to:
-- **AI Safety**: Understanding model behavior across the political spectrum
+- **AI Safety**: Understanding model behavior across the political spectrum as a whole
 - **Responsible AI**: Auditing and monitoring model drift
 - **Research Transparency**: Making methodology and data open and reproducible
 - **Policy & Governance**: Informing discussions about AI regulation and oversight

@@ -12,13 +12,20 @@ from typing import Optional, Dict, List
 import psycopg2
 from psycopg2.extras import RealDictCursor
 import json
+from dotenv import load_dotenv
 
-# main.py
-from fastapi import FastAPI
-from fastapi.middleware.cors import CORSMiddleware
+# Load environment variables from .env (for local development)
+load_dotenv()
 
-# Get connection details from environment
-DATABASE_URL = "postgresql://postgres.xzsbfdeduchwgtzbwhfp:sxhg5ay73039041371@aws-1-us-east-2.pooler.supabase.com:5432/postgres"
+# Get connection details from environment variable
+# This should be set in Render environment variables for production
+DATABASE_URL = os.getenv("DATABASE_URL")
+if not DATABASE_URL:
+    raise ValueError(
+        "❌ DATABASE_URL environment variable not set!\n"
+        "Local: Add DATABASE_URL to .env file\n"
+        "Production: Add DATABASE_URL to Render environment variables"
+    )
 
 # Track if we've already checked/initialized the database
 _db_initialized = False
@@ -38,10 +45,10 @@ def calc_prob(r1, r2): # From classic elo model.
 def update_elo(p1_elo, p2_elo, winner):
     if winner == "1":
       prob_opposite = calc_prob(p2_elo, p1_elo)
-      S_0, S_1 = -1, 1
+      S_0, S_1 = 1, -1
     else:
       prob_opposite = calc_prob(p1_elo, p2_elo)
-      S_0, S_1 = 1, -1
+      S_0, S_1 = -1, 1
     p1_new = p1_elo + 32 * S_0 * (prob_opposite)
     p2_new = p2_elo + 32 * S_1 * (prob_opposite)
     return p1_new, p2_new
@@ -191,33 +198,49 @@ def update_ratings(winner_model: str, loser_model: str, k_factor: int = 32) -> t
     try:
         cursor = conn.cursor(cursor_factory=RealDictCursor)
         
-        # Get current ratings
+        # Get current ratings - if model doesn't exist, insert it first with default 1500
         cursor.execute("SELECT rating FROM elo_ratings WHERE model_name = %s", (winner_model,))
         winner_result = cursor.fetchone()
-        winner_rating = winner_result['rating'] if winner_result else 1500
+        
+        if not winner_result:
+            # Insert new model with default rating
+            cursor.execute("""
+                INSERT INTO elo_ratings (model_name, rating, wins, losses)
+                VALUES (%s, 1500.0, 0, 0)
+            """, (winner_model,))
+            winner_rating = 1500.0
+        else:
+            winner_rating = float(winner_result['rating'])
         
         cursor.execute("SELECT rating FROM elo_ratings WHERE model_name = %s", (loser_model,))
         loser_result = cursor.fetchone()
-        loser_rating = loser_result['rating'] if loser_result else 1500
         
-        # Calculate new ratings
-        new_winner_rating, new_loser_rating = update_elo(winner_rating, loser_rating, 1)
+        if not loser_result:
+            # Insert new model with default rating
+            cursor.execute("""
+                INSERT INTO elo_ratings (model_name, rating, wins, losses)
+                VALUES (%s, 1500.0, 0, 0)
+            """, (loser_model,))
+            loser_rating = 1500.0
+        else:
+            loser_rating = float(loser_result['rating'])
         
-        # Upsert winner
+        # Calculate new ratings (pass "1" as string for winner)
+        new_winner_rating, new_loser_rating = update_elo(winner_rating, loser_rating, "1")
+        
+        # Update winner
         cursor.execute("""
-            INSERT INTO elo_ratings (model_name, rating, wins, updated_at)
-            VALUES (%s, %s, 1, CURRENT_TIMESTAMP)
-            ON CONFLICT (model_name) DO UPDATE
-            SET rating = %s, wins = elo_ratings.wins + 1, updated_at = CURRENT_TIMESTAMP
-        """, (winner_model, round(new_winner_rating, 2), round(new_winner_rating, 2)))
+            UPDATE elo_ratings 
+            SET rating = %s, wins = wins + 1, updated_at = CURRENT_TIMESTAMP
+            WHERE model_name = %s
+        """, (round(new_winner_rating, 2), winner_model))
         
-        # Upsert loser
+        # Update loser
         cursor.execute("""
-            INSERT INTO elo_ratings (model_name, rating, losses, updated_at)
-            VALUES (%s, %s, 1, CURRENT_TIMESTAMP)
-            ON CONFLICT (model_name) DO UPDATE
-            SET rating = %s, losses = elo_ratings.losses + 1, updated_at = CURRENT_TIMESTAMP
-        """, (loser_model, round(new_loser_rating, 2), round(new_loser_rating, 2)))
+            UPDATE elo_ratings 
+            SET rating = %s, losses = losses + 1, updated_at = CURRENT_TIMESTAMP
+            WHERE model_name = %s
+        """, (round(new_loser_rating, 2), loser_model))
         
         conn.commit()
         return new_winner_rating, new_loser_rating
@@ -282,47 +305,7 @@ def reset_ratings():
         cursor.close()
         conn.close()
 
-app = FastAPI()
 
-# Enable CORS so frontend can access
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],  # or restrict to your domain
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
 
-@app.get("/ratings")
-def fetch_ratings():
-    """Return all model ratings as JSON."""
-    try:
-        ratings = get_all_ratings()
-        return {"success": True, "data": ratings}
-    except Exception as e:
-        return {"success": False, "error": str(e)}
-@app.post("/api/vote")
-def handle_vote(vote_data: dict):
-    """Handle a vote and update Elo ratings."""
-    try:
-        winner = vote_data.get("winner_model")
-        loser = vote_data.get("loser_model")
-        prompt = vote_data.get("prompt")
-        
-        if not winner or not loser:
-            return {"success": False, "error": "Missing winner or loser model"}
-        
-        # Update Elo ratings in database
-        new_winner_rating, new_loser_rating = update_ratings(winner, loser)
-        
-        return {
-            "success": True,
-            "new_ratings": {
-                "winner": new_winner_rating,
-                "loser": new_loser_rating
-            },
-            "message": f"{winner} won against {loser}"
-        }
-    except Exception as e:
-        print(f"Vote error: {e}")
-        return {"success": False, "error": str(e)}
+# Note: Do NOT define FastAPI app here. This is a utility module only.
+# All endpoints are defined in backend/api.py
