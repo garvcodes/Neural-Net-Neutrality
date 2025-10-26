@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Debate! — Neural Net Neutrality</title>
+  <meta name="description" content="Watch LLMs debate each other on topics you choose and vote on the winner." />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./css/styles.css">
+  <link rel="stylesheet" href="./css/debate.css">
+</head>
+
+<body>
+  <header class="site-header">
+    <div class="container header-inner">
+      <div class="brand">
+        <img src="./assets/logo.svg" alt="Neural Net Neutrality logo" class="logo">
+        <span class="brand-name">Neural Net Neutrality</span>
+      </div>
+      <nav class="nav">
+        <a href="./index.html">Home</a>
+        <a href="./battle.html">Battle!</a>
+        <a href="./debate.html" class="active">Debate!</a>
+        <a href="./ratings.html">Ratings</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="debate-section container">
+      <h1 class="debate-title">LLM Debate Arena</h1>
+      <p class="debate-subtitle">Choose a topic, select two models, and watch them debate. Then vote for who presented the better argument.</p>
+
+      <!-- Model Selection -->
+      <div class="model-selection">
+        <div class="model-select-group">
+          <label for="model-pro-select">Pro (Argument For):</label>
+          <select id="model-pro-select" class="model-select">
+            <option value="gpt-4o-mini">OpenAI GPT-4o Mini</option>
+            <option value="gpt-4o">OpenAI GPT-4o</option>
+            <option value="gpt-3.5-turbo">OpenAI GPT-3.5 Turbo</option>
+            <option value="claude-3-haiku-20240307">Claude 3 Haiku</option>
+            <option value="claude-3-sonnet-20240229">Claude 3 Sonnet</option>
+            <option value="gemini-1.5-pro">Gemini 1.5 Pro</option>
+            <option value="gemini-2.0-flash">Gemini 2.0 Flash</option>
+          </select>
+        </div>
+        <div class="vs-divider">VS</div>
+        <div class="model-select-group">
+          <label for="model-con-select">Con (Argument Against):</label>
+          <select id="model-con-select" class="model-select">
+            <option value="gpt-4o-mini">OpenAI GPT-4o Mini</option>
+            <option value="gpt-4o">OpenAI GPT-4o</option>
+            <option value="gpt-3.5-turbo">OpenAI GPT-3.5 Turbo</option>
+            <option value="claude-3-haiku-20240307">Claude 3 Haiku</option>
+            <option value="claude-3-sonnet-20240229">Claude 3 Sonnet</option>
+            <option value="gemini-1.5-pro">Gemini 1.5 Pro</option>
+            <option value="gemini-2.0-flash" selected>Gemini 2.0 Flash</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Topic Input -->
+      <div class="topic-section">
+        <label for="topic-input">Debate Topic:</label>
+        <input 
+          type="text" 
+          id="topic-input" 
+          placeholder="Enter a debate topic (e.g., 'Universal Basic Income' or 'Climate Change Policy')" 
+          class="topic-input"
+        />
+        <button id="start-debate-btn" class="btn primary">Start Debate</button>
+      </div>
+
+      <!-- Loading State -->
+      <div id="loading-state" class="loading-state hidden">
+        <div class="spinner"></div>
+        <p>Debaters are preparing their arguments...</p>
+      </div>
+
+      <!-- Debate Results -->
+      <div id="debate-results" class="debate-results hidden">
+        <div class="debate-topic-display">
+          <h2>Topic: <span id="topic-display"></span></h2>
+        </div>
+
+        <div class="debate-container">
+          <!-- Pro Argument -->
+          <div class="debate-column pro-column">
+            <div class="debate-header">
+              <h3 id="pro-label">Model Pro</h3>
+              <span class="position-badge pro">PRO</span>
+            </div>
+            <div class="argument-box">
+              <p class="argument-subtitle">Argument For:</p>
+              <div id="pro-argument" class="argument-text"></div>
+            </div>
+            <button id="vote-pro" class="btn vote-btn pro-vote">Vote: Pro Wins</button>
+          </div>
+
+          <!-- Debate Divider -->
+          <div class="debate-divider">
+            <div class="divider-line"></div>
+            <span class="divider-text">vs</span>
+            <div class="divider-line"></div>
+          </div>
+
+          <!-- Con Argument -->
+          <div class="debate-column con-column">
+            <div class="debate-header">
+              <h3 id="con-label">Model Con</h3>
+              <span class="position-badge con">CON</span>
+            </div>
+            <div class="argument-box">
+              <p class="argument-subtitle">Argument Against:</p>
+              <div id="con-argument" class="argument-text"></div>
+            </div>
+            <button id="vote-con" class="btn vote-btn con-vote">Vote: Con Wins</button>
+          </div>
+        </div>
+
+        <div class="debate-actions">
+          <button id="new-debate-btn" class="btn secondary">Start New Debate</button>
+        </div>
+      </div>
+
+      <!-- Error State -->
+      <div id="error-state" class="error-state hidden">
+        <p id="error-message"></p>
+        <button id="retry-btn" class="btn primary">Try Again</button>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-inner">
+      <p>© 2025 Neural Net Neutrality — Built for transparency in AI. Data & code open-sourced under an MIT license.</p>
+    </div>
+  </footer>
+
+  <script src="./js/config.js" defer></script>
+  <script src="./js/debate.js" defer></script>
+</body>
+</html>

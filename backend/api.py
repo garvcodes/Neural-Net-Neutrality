@@ -63,6 +63,14 @@ class VoteRequest(BaseModel):
     prompt: str = None  # Optional: for logging/analytics
 
 
+class DebateRequest(BaseModel):
+    topic: str
+    model_pro: str = "gpt-4o-mini"
+    model_con: str = "gemini-2.0-flash"
+    api_key_pro: str = None
+    api_key_con: str = None
+
+
 #* Try to parse the model's text as a JSON array.
 #* If it's not pure JSON, use a regex to grab the first [...] block and parse that.
 def _extract_json_array(text: str):
@@ -283,5 +291,78 @@ def take_test(req: TakeTestRequest):
         "aggregate": {"economic": econ_norm, "social": soc_norm},
         "results": results,
         "raw_model_output": text,
+    }
+
+
+@app.post("/api/debate")
+def debate(req: DebateRequest):
+    """Debate endpoint: get pro and con arguments from two models for the same topic."""
+    if not req.topic or not req.topic.strip():
+        raise HTTPException(status_code=400, detail="Topic is required")
+    
+    # System prompts for each side
+    pro_system = (
+        "You are an expert debater arguing in favor of a position. "
+        "Make a clear, well-reasoned argument with 2-3 key points. "
+        "Be persuasive but fair-minded. Keep your response concise but substantive (2-3 paragraphs)."
+    )
+    
+    con_system = (
+        "You are an expert debater arguing against a position. "
+        "Make a clear, well-reasoned counterargument with 2-3 key points. "
+        "Be persuasive but fair-minded. Keep your response concise but substantive (2-3 paragraphs)."
+    )
+    
+    user_msg = f"Debate topic: {req.topic}"
+    
+    arguments = {}
+    
+    # Get pro argument from Model Pro
+    try:
+        pro_arg = call_model(
+            model=req.model_pro,
+            system_msg=pro_system,
+            user_msg=user_msg,
+            api_key=req.api_key_pro,
+            params={"temperature": 0.7, "max_tokens": 800}
+        )
+        arguments["pro_argument"] = {
+            "model": req.model_pro,
+            "argument": pro_arg
+        }
+    except Exception as e:
+        arguments["pro_argument"] = {
+            "model": req.model_pro,
+            "error": str(e),
+            "argument": None
+        }
+    
+    # Get con argument from Model Con
+    try:
+        con_arg = call_model(
+            model=req.model_con,
+            system_msg=con_system,
+            user_msg=user_msg,
+            api_key=req.api_key_con,
+            params={"temperature": 0.7, "max_tokens": 800}
+        )
+        arguments["con_argument"] = {
+            "model": req.model_con,
+            "argument": con_arg
+        }
+    except Exception as e:
+        arguments["con_argument"] = {
+            "model": req.model_con,
+            "error": str(e),
+            "argument": None
+        }
+    
+    return {
+        "topic": req.topic,
+        "pro_argument": arguments.get("pro_argument", {}).get("argument") or "No argument provided.",
+        "con_argument": arguments.get("con_argument", {}).get("argument") or "No argument provided.",
+        "model_pro": req.model_pro,
+        "model_con": req.model_con,
+        "arguments": arguments
     }
 
