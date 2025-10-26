@@ -1,3 +1,30 @@
+function updateModelLabel(selectElement, labelElement) {
+  const selectedText = selectElement.options[selectElement.selectedIndex].text;
+  labelElement.textContent = selectedText;
+}
+
+function parseQuestions(text) {
+  return text
+    .split(/\r?\n/)
+    .map(line => line.trim())
+    .filter(line => line.length > 0)
+    .map((q, i) => ({ id: i + 1, text: q }));
+}
+
+async function typeWriter(element, text) {
+  element.textContent = "";
+  element.classList.add("typing");
+  const delay = 12; // ms per character
+
+  for (let i = 0; i < text.length; i++) {
+    element.textContent += text[i];
+    await new Promise((r) => setTimeout(r, delay));
+    element.scrollTop = element.scrollHeight; // auto-scroll
+  }
+
+  element.classList.remove("typing");
+}
+
 document.addEventListener("DOMContentLoaded", () => {
   const questionGrid = document.getElementById("question-grid");
   const form = document.getElementById("battle-form");
@@ -16,6 +43,10 @@ document.addEventListener("DOMContentLoaded", () => {
   let currentModelA = "gpt-4o-mini";
   let currentModelB = "gemini-2.0-flash";
 
+  // Initialize labels immediately
+  updateModelLabel(modelASelect, modelALabel);
+  updateModelLabel(modelBSelect, modelBLabel);
+
   // Update model labels when selection changes
   modelASelect.addEventListener("change", (e) => {
     currentModelA = e.target.value;
@@ -26,15 +57,6 @@ document.addEventListener("DOMContentLoaded", () => {
     currentModelB = e.target.value;
     updateModelLabel(modelBSelect, modelBLabel);
   });
-
-  function updateModelLabel(selectElement, labelElement) {
-    const selectedText = selectElement.options[selectElement.selectedIndex].text;
-    labelElement.textContent = selectedText;
-  }
-
-  // Initialize labels
-  updateModelLabel(modelASelect, modelALabel);
-  updateModelLabel(modelBSelect, modelBLabel);
 
   // --- Load and display 3 random questions from TSV ---
   fetch("./questions.tsv")
@@ -150,28 +172,5 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  // --- Helpers ---
-  function parseQuestions(text) {
-    return text
-      .split(/\r?\n/)
-      .map(line => line.trim())
-      .filter(line => line.length > 0)
-      .map((q, i) => ({ id: i + 1, text: q }));
-  }
-    // --- Typewriter animation ---
-  async function typeWriter(element, text) {
-    element.textContent = "";
-    element.classList.add("typing");
-    const delay = 12; // ms per character
-
-    for (let i = 0; i < text.length; i++) {
-      element.textContent += text[i];
-      await new Promise((r) => setTimeout(r, delay));
-      element.scrollTop = element.scrollHeight; // auto-scroll
-    }
-
-    element.classList.remove("typing");
-  }
-  
 });
 
