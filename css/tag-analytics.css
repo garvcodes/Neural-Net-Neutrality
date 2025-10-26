@@ -1,0 +1,469 @@
+/* Tag Analytics Page */
+.analytics-section {
+  max-width: 1400px;
+}
+
+.analytics-title {
+  font-size: 2.5rem;
+  margin-bottom: 0.5rem;
+  color: #1a1a1a;
+  text-align: center;
+}
+
+.analytics-subtitle {
+  text-align: center;
+  color: #666;
+  margin-bottom: 2rem;
+  font-size: 1.1rem;
+}
+
+/* Filter Section */
+.filter-section {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 3rem;
+  padding: 1.5rem;
+  background: #f9fafb;
+  border-radius: 8px;
+  border: 1px solid #e5e7eb;
+}
+
+.filter-section label {
+  font-weight: 600;
+  color: #1f2937;
+}
+
+.filter-select {
+  padding: 0.75rem 1rem;
+  font-size: 0.95rem;
+  border: 2px solid #d1d5db;
+  border-radius: 6px;
+  background: white;
+  cursor: pointer;
+  transition: border-color 0.3s ease;
+}
+
+.filter-select:hover {
+  border-color: #4f46e5;
+}
+
+.filter-select:focus {
+  outline: none;
+  border-color: #4f46e5;
+  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+}
+
+/* Section Headers */
+.dimensions-section,
+.tags-section,
+.comparison-section {
+  margin-bottom: 4rem;
+}
+
+.dimensions-section h2,
+.tags-section h2,
+.comparison-section h2 {
+  font-size: 1.75rem;
+  color: #1f2937;
+  margin-bottom: 0.5rem;
+}
+
+.section-desc {
+  color: #6b7280;
+  margin-bottom: 2rem;
+  font-size: 0.95rem;
+}
+
+/* Dimensions Grid */
+.dimensions-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  gap: 2rem;
+  margin-bottom: 2rem;
+}
+
+.dimension-card {
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+}
+
+.dimension-card:hover {
+  border-color: #4f46e5;
+  box-shadow: 0 4px 12px rgba(79, 70, 229, 0.15);
+}
+
+.dimension-header {
+  margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 2px solid #f3f4f6;
+}
+
+.dimension-header h3 {
+  margin: 0 0 0.5rem 0;
+  font-size: 1.25rem;
+  color: #1f2937;
+}
+
+.dimension-desc {
+  margin: 0;
+  font-size: 0.85rem;
+  color: #6b7280;
+  line-height: 1.4;
+}
+
+/* Dimension Chart */
+.dimension-chart {
+  min-height: 200px;
+  margin-bottom: 1.5rem;
+  display: flex;
+  align-items: flex-end;
+  justify-content: flex-start;
+  gap: 0.75rem;
+  padding: 1rem;
+  background: #f9fafb;
+  border-radius: 8px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  min-width: 0;
+}
+
+.chart-bar {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex: 0 0 auto;
+  min-width: 60px;
+  width: 60px;
+}
+
+.bar-fill {
+  width: 100%;
+  background: linear-gradient(180deg, #4f46e5, #7c3aed);
+  border-radius: 4px 4px 0 0;
+  min-height: 20px;
+  transition: all 0.3s ease;
+}
+
+.chart-bar:hover .bar-fill {
+  filter: brightness(1.1);
+}
+
+.bar-label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #6b7280;
+  text-align: center;
+  margin-top: 0.5rem;
+  word-wrap: break-word;
+}
+
+.bar-value {
+  font-size: 0.7rem;
+  color: #1f2937;
+  font-weight: 700;
+  margin-top: 0.25rem;
+}
+
+/* Scrollbar styling for dimension chart */
+.dimension-chart::-webkit-scrollbar {
+  height: 6px;
+}
+
+.dimension-chart::-webkit-scrollbar-track {
+  background: #f3f4f6;
+  border-radius: 3px;
+}
+
+.dimension-chart::-webkit-scrollbar-thumb {
+  background: #d1d5db;
+  border-radius: 3px;
+}
+
+.dimension-chart::-webkit-scrollbar-thumb:hover {
+  background: #9ca3af;
+}
+
+/* Dimension Leaderboard */
+.dimension-leaderboard {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.leaderboard-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem;
+  background: #f3f4f6;
+  border-radius: 6px;
+  font-size: 0.85rem;
+}
+
+.leaderboard-model {
+  font-weight: 600;
+  color: #1f2937;
+  flex: 1;
+}
+
+.leaderboard-score {
+  color: #4f46e5;
+  font-weight: 700;
+  min-width: 50px;
+  text-align: right;
+}
+
+/* Tags Grid */
+.tags-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.tag-category-card {
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.tag-category-card h3 {
+  margin: 0 0 1rem 0;
+  font-size: 1.1rem;
+  color: #1f2937;
+  padding-bottom: 0.75rem;
+  border-bottom: 2px solid #f3f4f6;
+}
+
+.tag-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.tag-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem;
+  background: #f9fafb;
+  border-radius: 6px;
+  border-left: 3px solid #4f46e5;
+}
+
+.tag-name {
+  font-weight: 500;
+  color: #1f2937;
+  font-size: 0.9rem;
+  text-transform: capitalize;
+}
+
+.tag-count {
+  background: #4f46e5;
+  color: white;
+  padding: 0.25rem 0.75rem;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
+/* Comparison Section */
+.comparison-controls {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 2rem;
+  padding: 1.5rem;
+  background: #f9fafb;
+  border-radius: 8px;
+}
+
+.comparison-select {
+  flex: 1;
+  padding: 0.75rem 1rem;
+  font-size: 0.95rem;
+  border: 2px solid #d1d5db;
+  border-radius: 6px;
+  background: white;
+  cursor: pointer;
+  transition: border-color 0.3s ease;
+}
+
+.comparison-select:hover,
+.comparison-select:focus {
+  outline: none;
+  border-color: #4f46e5;
+  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+}
+
+.vs-text {
+  font-weight: 700;
+  color: #4f46e5;
+  font-size: 1.1rem;
+  text-transform: uppercase;
+  opacity: 0.6;
+}
+
+.comparison-chart {
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 2rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+}
+
+.comparison-chart.hidden {
+  display: none;
+}
+
+.comparison-model {
+  display: flex;
+  flex-direction: column;
+}
+
+.comparison-model-title {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #1f2937;
+  margin-bottom: 1.5rem;
+  text-align: center;
+}
+
+.comparison-dimension-row {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.comparison-dimension-label {
+  min-width: 120px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #6b7280;
+  text-align: right;
+}
+
+.comparison-bar-container {
+  flex: 1;
+  height: 24px;
+  background: #e5e7eb;
+  border-radius: 4px;
+  overflow: hidden;
+  position: relative;
+}
+
+.comparison-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #4f46e5, #7c3aed);
+}
+
+/* Loading State */
+.loading-state {
+  text-align: center;
+  padding: 3rem;
+}
+
+.spinner {
+  border: 4px solid #f3f4f6;
+  border-top: 4px solid #4f46e5;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  animation: spin 1s linear infinite;
+  margin: 0 auto 1rem;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.loading-state p {
+  color: #6b7280;
+  font-size: 1rem;
+}
+
+/* Error State */
+.error-state {
+  background: #fee2e2;
+  border: 1px solid #fca5a5;
+  border-radius: 8px;
+  padding: 1.5rem;
+  color: #991b1b;
+  text-align: center;
+}
+
+#error-message {
+  margin: 0;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .analytics-title {
+    font-size: 1.75rem;
+  }
+
+  .dimensions-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .comparison-chart {
+    grid-template-columns: 1fr;
+  }
+
+  .tags-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .filter-section {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .comparison-controls {
+    flex-direction: column;
+  }
+
+  .comparison-select {
+    width: 100%;
+  }
+
+  .vs-text {
+    width: 100%;
+    text-align: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .analytics-title {
+    font-size: 1.5rem;
+  }
+
+  .dimension-card {
+    padding: 1rem;
+  }
+
+  .dimension-chart {
+    min-height: 150px;
+  }
+
+  .tag-category-card {
+    padding: 1rem;
+  }
+
+  .comparison-dimension-label {
+    min-width: 80px;
+    font-size: 0.75rem;
+  }
+}
