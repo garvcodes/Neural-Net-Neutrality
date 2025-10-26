@@ -32,8 +32,8 @@ document.addEventListener("DOMContentLoaded", async () => {
     // Initialize filter and comparison selects
     populateSelects(allModels);
 
-    // Generate sample dimension data (in production, this would come from backend)
-    generateDimensionData(allModels);
+    // Fetch real dimension scores from backend
+    await loadDimensionData();
 
     // Display initial charts
     displayDimensions(allModels);
@@ -64,33 +64,49 @@ document.addEventListener("DOMContentLoaded", async () => {
     compareModel2.innerHTML = '<option value="">Select Model 2</option>' + options;
   }
 
-  function generateDimensionData(models) {
-    // Generate sample dimension scores for each model
-    // In production, this would be calculated from actual votes with tags
-    const dimensions = [
-      "empathy",
-      "aggressiveness",
-      "evidence_use",
-      "political_economic",
-      "political_social"
-    ];
-
-    allDimensions = {};
-    dimensions.forEach(dim => {
-      allDimensions[dim] = {};
-      models.forEach(model => {
-        // Generate semi-random but deterministic scores based on model name
-        const seed = model.split('').reduce((s, c) => s + c.charCodeAt(0), 0);
-        const ranges = {
-          empathy: [0.4, 0.8],
-          aggressiveness: [0.3, 0.7],
-          evidence_use: [0.5, 0.9],
-          political_economic: [-0.5, 0.5],
-          political_social: [-0.5, 0.5]
-        };
-        const [min, max] = ranges[dim];
-        allDimensions[dim][model] = min + ((seed % 100) / 100) * (max - min);
+  async function loadDimensionData() {
+    // Fetch aggregated dimension scores from backend
+    const resp = await fetch(`${API_CONFIG.BACKEND_URL}/api/dimension-scores`);
+    if (!resp.ok) throw new Error("Failed to fetch dimension scores");
+    const data = await resp.json();
+    
+    const dimensionScores = data.dimension_scores || {};
+    
+    // Transform backend data to allDimensions structure
+    allDimensions = {
+      empathy: {},
+      aggressiveness: {},
+      evidence_use: {},
+      political_economic: {},
+      political_social: {}
+    };
+    
+    // Populate with data from backend
+    Object.entries(dimensionScores).forEach(([model, scores]) => {
+      Object.keys(allDimensions).forEach(dim => {
+        if (scores[dim] !== undefined) {
+          allDimensions[dim][model] = scores[dim];
+        }
       });
+    });
+    
+    // If no data yet, show placeholder (0.5 for 0-1 scales, 0.0 for -1 to 1 scales)
+    allModels.forEach(model => {
+      if (!allDimensions.empathy[model]) {
+        allDimensions.empathy[model] = 0.5;
+      }
+      if (!allDimensions.aggressiveness[model]) {
+        allDimensions.aggressiveness[model] = 0.5;
+      }
+      if (!allDimensions.evidence_use[model]) {
+        allDimensions.evidence_use[model] = 0.5;
+      }
+      if (!allDimensions.political_economic[model]) {
+        allDimensions.political_economic[model] = 0.0;
+      }
+      if (!allDimensions.political_social[model]) {
+        allDimensions.political_social[model] = 0.0;
+      }
     });
   }
 
@@ -151,7 +167,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       content: document.getElementById("content-tags")
     };
 
-    // Generate sample tag frequencies
+    // Generate sample tag frequencies (in production, query backend)
     const tagFrequencies = {};
     Object.values(allTags).forEach((categoryTags, idx) => {
       Object.keys(categoryTags).forEach(tag => {

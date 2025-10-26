@@ -8,7 +8,11 @@ from openai import OpenAI
 from typing import List, Optional, Dict
 from .utils import parse_response_to_likert, compute_axis_score
 from .providers import call_model
-from .supabase_db import update_ratings, get_all_ratings, init_database, store_vote_tags, ensure_tags_table_exists
+from .supabase_db import (
+    update_ratings, get_all_ratings, init_database, store_vote_tags, 
+    ensure_tags_table_exists, store_dimension_scores, get_aggregated_dimension_scores,
+    get_dimension_leaderboard
+)
 from .tags import calculate_dimension_scores, validate_tag, get_all_tags
 
 
@@ -247,7 +251,9 @@ def vote_with_tags(req: VoteWithTagsRequest):
         new_winner_rating, new_loser_rating = update_ratings(req.winner_model, req.loser_model)
         
         # Calculate dimension scores from tags
-        dimension_scores = calculate_dimension_scores(req.tags)
+        winner_dimension_scores = calculate_dimension_scores(req.tags)
+        # Loser gets opposite interpretation (if tags favor one side, they disfavor the other)
+        loser_dimension_scores = {k: 1.0 - v for k, v in winner_dimension_scores.items()}
         
         # Store tags in database
         from .tags import TAGS_BY_CATEGORY
@@ -263,6 +269,14 @@ def vote_with_tags(req: VoteWithTagsRequest):
             tag_categories=tag_categories
         )
         
+        # Store dimension scores for both models
+        store_dimension_scores(
+            winner_model=req.winner_model,
+            loser_model=req.loser_model,
+            winner_scores=winner_dimension_scores,
+            loser_scores=loser_dimension_scores
+        )
+        
         return {
             "success": True,
             "winner_model": req.winner_model,
@@ -271,7 +285,7 @@ def vote_with_tags(req: VoteWithTagsRequest):
             "loser_new_rating": round(new_loser_rating, 2),
             "tags_recorded": len(req.tags),
             "tags": req.tags,
-            "dimension_scores": {k: round(v, 3) for k, v in dimension_scores.items()},
+            "dimension_scores": {k: round(v, 3) for k, v in winner_dimension_scores.items()},
         }
     except Exception as e:
         print(f"Vote with tags error: {e}")
@@ -290,6 +304,39 @@ def get_tags():
         }
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Failed to fetch tags: {str(e)}")
+
+
+@app.get("/api/dimension-scores")
+def get_dimension_scores(model_name: Optional[str] = None):
+    """Get aggregated dimension scores for models."""
+    try:
+        scores = get_aggregated_dimension_scores(model_name=model_name)
+        return {
+            "success": True,
+            "dimension_scores": scores,
+            "model_count": len(scores)
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to fetch dimension scores: {str(e)}")
+
+
+@app.get("/api/dimension-leaderboard/{dimension}")
+def get_dimension_board(dimension: str, limit: int = 10):
+    """Get leaderboard for a specific dimension."""
+    valid_dimensions = ["empathy", "aggressiveness", "evidence_use", "political_economic", "political_social"]
+    if dimension not in valid_dimensions:
+        raise HTTPException(status_code=400, detail=f"Invalid dimension. Must be one of: {', '.join(valid_dimensions)}")
+    
+    try:
+        leaderboard = get_dimension_leaderboard(dimension=dimension, limit=limit)
+        return {
+            "success": True,
+            "dimension": dimension,
+            "leaderboard": leaderboard,
+            "limit": limit
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to fetch dimension leaderboard: {str(e)}")
 
 
 @app.get("/api/ratings")
