@@ -7,7 +7,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const outputB = document.getElementById("modelB-output");
 
   // --- Load and display 3 random questions from TSV ---
-  fetch("../questions.tsv")
+  fetch("./questions.tsv")
     .then(res => res.text())
     .then(text => {
       const questions = parseQuestions(text);
