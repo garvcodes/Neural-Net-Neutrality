@@ -99,7 +99,7 @@
       
       for (let i = 0; i < displayText.length; i++) {
         element.textContent += displayText[i];
-        await new Promise(resolve => setTimeout(resolve, 20)); // 30ms per character
+        await new Promise(resolve => setTimeout(resolve, 15)); // 30ms per character
       }
       
       // Add blinking cursor at end
@@ -200,9 +200,9 @@
       <div class="container">
         <h2 class="section-title">How it works</h2>
         <ol class="how-list">
-          <li><strong>Collect</strong> prompts and responses from model versions over time.</li>
-          <li><strong>Score</strong> outputs with a consistent rubric to map political leanings into structured signals.</li>
-          <li><strong>Visualize</strong> trends and make the raw data downloadable for researchers.</li>
+          <li style="font-size:20px;"><strong>Collect</strong> prompts and responses from model versions over time.</li>
+          <li style="font-size:20px;"><strong>Score</strong> outputs with a consistent rubric to map political leanings into structured signals.</li>
+          <li style="font-size:20px;"><strong>Visualize</strong> trends and make the raw data downloadable for researchers.</li>
         </ol>
       </div>
     </section>
