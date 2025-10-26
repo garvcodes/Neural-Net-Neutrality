@@ -446,7 +446,7 @@ body {
 .snapshot-plot {
   margin-top: 32px;
   padding-top: 40px;
-  border-top: 1.5px solid var(--border-black);
+  border-top: 1.0px solid var(--border-black);
 }
 
 .compass-figure {
