@@ -3,16 +3,16 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>AI Politics Podcast — Neural Net Neutrality</title>
-  <meta name="description" content="Listen to AI-generated news podcasts covering the latest in AI and politics." />
+  <title>AI Politics Daily — Neural Net Neutrality</title>
+  <meta name="description" content="Your daily AI-generated neutral news podcast" />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="./css/styles.css">
   <link rel="stylesheet" href="./css/podcast.css">
 </head>
 
-<body>
+<body class="podcast-app">
   <header class="site-header">
     <div class="container header-inner">
       <div class="brand">
@@ -20,184 +20,135 @@
         <span class="brand-name">Neural Net Neutrality</span>
       </div>
       <nav class="nav">
-        <a href="./index.html">Home</a>
-        <a href="./battle.html">Battle!</a>
-        <a href="./ratings.html">Ratings</a>
-        <a href="./podcast-v2.html" class="active">Podcast</a>
+        <a href="./index.html">🏠Home</a>
+        <a href="./battle.html">🥊Battle!</a>
+        <a href="./debate.html">🗯️Debate!</a>
+        <a href="./ratings.html">🥇Leaderboard</a>
+        <a href="./podcast.html" class="active">📻Podcast</a>
+        <a href="./tag-analytics.html">📊Tag Analytics</a>
       </nav>
     </div>
   </header>
 
-  <main>
-    <!-- Hero Section -->
-    <section class="podcast-hero">
-      <div class="container">
-        <div class="hero-content">
-          <h1 class="podcast-title">🎙️ AI Politics Daily</h1>
-          <p class="podcast-subtitle">Your daily AI-generated news podcast covering the latest in artificial intelligence and politics</p>
-          <button id="generateBtn" class="btn primary large">
-            <span class="btn-text">Generate Today's Episode</span>
-            <span class="btn-loader hidden">
-              <span class="spinner"></span>
-              Generating...
-            </span>
-          </button>
-          <p class="generate-note">Powered by ElevenLabs AI voices and GPT-5-mini</p>
-        </div>
-      </div>
-    </section>
-
+  <main class="podcast-main">
     <!-- Loading State -->
-    <section id="loadingSection" class="loading-section hidden">
-      <div class="container">
-        <div class="loading-card">
-          <div class="loading-spinner"></div>
-          <h3>Generating your podcast episode...</h3>
-          <p class="loading-steps">
-            <span id="step1" class="step">📰 Fetching latest articles...</span>
-            <span id="step2" class="step">✍️ Writing news script...</span>
-            <span id="step3" class="step">🎙️ Generating audio...</span>
-            <span id="step4" class="step">☁️ Uploading to cloud...</span>
-          </p>
-          <p class="loading-time">This usually takes 30-60 seconds</p>
-        </div>
-      </div>
-    </section>
+    <div id="loadingState" class="loading-state">
+      <div class="loading-spinner"></div>
+      <p>Loading episodes...</p>
+    </div>
 
     <!-- Error State -->
-    <section id="errorSection" class="error-section hidden">
-      <div class="container">
-        <div class="error-card">
-          <h3>❌ Error Generating Podcast</h3>
-          <p id="errorMessage"></p>
-          <button id="retryBtn" class="btn secondary">Try Again</button>
-        </div>
-      </div>
-    </section>
+    <div id="errorState" class="error-state hidden">
+      <div class="error-icon">⚠️</div>
+      <h2>Failed to load episodes</h2>
+      <p id="errorMessage"></p>
+      <button class="btn secondary" onclick="location.reload()">Retry</button>
+    </div>
 
-    <!-- Player Section -->
-    <section id="playerSection" class="player-section hidden">
-      <div class="container">
-        <div class="podcast-card">
-          <!-- Episode Info -->
-          <div class="episode-info">
-            <h2 class="episode-title" id="episodeTitle">Today's Episode</h2>
-            <p class="episode-date" id="episodeDate"></p>
-            <p class="episode-meta">
-              <span id="episodeDuration">0:00</span> •
-              <span id="episodeArticleCount">5 articles</span>
-            </p>
-          </div>
-
-          <!-- Audio Player -->
-          <div class="audio-player">
-            <!-- Hidden HTML5 audio element -->
-            <audio id="audioElement" preload="metadata"></audio>
-
-            <!-- Play/Pause Button -->
-            <button id="playPauseBtn" class="play-pause-btn" aria-label="Play">
-              <svg class="play-icon" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M8 5v14l11-7z"/>
-              </svg>
-              <svg class="pause-icon hidden" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M6 4h4v16H6V4zm8 0h4v16h-4V4z"/>
-              </svg>
-            </button>
-
-            <!-- Progress Bar -->
-            <div class="progress-container">
-              <div class="time-labels">
-                <span id="currentTime" class="current-time">0:00</span>
-                <span id="totalTime" class="total-time">0:00</span>
-              </div>
-              <div class="progress-bar-wrapper">
-                <input type="range" id="progressBar" class="progress-bar" min="0" max="100" value="0" step="0.1" aria-label="Seek">
-                <div class="progress-fill" id="progressFill"></div>
-              </div>
-            </div>
-
-            <!-- Controls Row -->
-            <div class="controls-row">
-              <!-- Skip Backward -->
-              <button id="skipBackBtn" class="control-btn" aria-label="Skip backward 10 seconds" title="Skip backward 10s">
-                <svg viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M11.99 5V1l-5 5 5 5V7c3.31 0 6 2.69 6 6s-2.69 6-6 6-6-2.69-6-6h-2c0 4.42 3.58 8 8 8s8-3.58 8-8-3.58-8-8-8z"/>
-                  <text x="12" y="15" text-anchor="middle" font-size="8" font-weight="bold" fill="currentColor">10</text>
-                </svg>
-              </button>
-
-              <!-- Volume Control -->
-              <div class="volume-control">
-                <label for="volumeSlider" class="volume-label">
-                  <svg class="volume-icon" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z"/>
-                  </svg>
-                </label>
-                <input type="range" id="volumeSlider" class="volume-slider" min="0" max="100" value="80" aria-label="Volume">
-                <span id="volumeValue" class="volume-value">80%</span>
-              </div>
-
-              <!-- Playback Speed -->
-              <div class="speed-control">
-                <label for="speedSelect" class="speed-label">Speed</label>
-                <select id="speedSelect" class="speed-select" aria-label="Playback speed">
-                  <option value="0.5">0.5x</option>
-                  <option value="0.75">0.75x</option>
-                  <option value="1" selected>1x</option>
-                  <option value="1.25">1.25x</option>
-                  <option value="1.5">1.5x</option>
-                  <option value="2">2x</option>
-                </select>
-              </div>
-
-              <!-- Skip Forward -->
-              <button id="skipForwardBtn" class="control-btn" aria-label="Skip forward 10 seconds" title="Skip forward 10s">
-                <svg viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M12 5V1l5 5-5 5V7c-3.31 0-6 2.69-6 6s2.69 6 6 6 6-2.69 6-6h2c0 4.42-3.58 8-8 8s-8-3.58-8-8 3.58-8 8-8z"/>
-                  <text x="12" y="15" text-anchor="middle" font-size="8" font-weight="bold" fill="currentColor">10</text>
-                </svg>
-              </button>
-
-              <!-- Download Button -->
-              <button id="downloadBtn" class="control-btn download-btn" aria-label="Download episode" title="Download MP3">
-                <svg viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/>
-                </svg>
-                Download
-              </button>
-            </div>
-          </div>
-
-          <!-- Transcript Section -->
-          <div class="transcript-section">
-            <button id="toggleTranscript" class="toggle-btn">
-              <span>Show Full Transcript</span>
-              <svg class="chevron-icon" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M7 10l5 5 5-5z"/>
-              </svg>
-            </button>
-            <div id="transcriptContent" class="transcript-content hidden">
-              <p id="transcriptText"></p>
-            </div>
-          </div>
-
-          <!-- Sources Section -->
-          <div class="sources-section">
-            <h3>📰 Sources</h3>
-            <div id="sourcesList" class="sources-list"></div>
+    <!-- Podcast Library -->
+    <div id="podcastLibrary" class="podcast-library hidden">
+      <!-- Hero / Featured Episode -->
+      <section class="featured-episode">
+        <div class="container">
+          <div class="featured-content" id="featuredEpisode">
+            <!-- Populated by JavaScript -->
           </div>
         </div>
-      </div>
-    </section>
+      </section>
+
+      <!-- Episode Library Grid -->
+      <section class="episode-library">
+        <div class="container">
+          <div class="library-header">
+            <h2>All Episodes</h2>
+            <div class="sort-controls">
+              <select id="sortSelect" class="sort-select">
+                <option value="newest">Newest First</option>
+                <option value="oldest">Oldest First</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="episode-grid" id="episodeGrid">
+            <!-- Episode cards populated by JavaScript -->
+          </div>
+
+          <div class="load-more-container hidden" id="loadMoreContainer">
+            <button class="btn secondary" id="loadMoreBtn">Load More Episodes</button>
+          </div>
+        </div>
+      </section>
+    </div>
   </main>
 
-  <footer class="site-footer">
-    <div class="container footer-inner">
-      <p>© 2025 Neural Net Neutrality — Built for transparency in AI. Data & code open-sourced under an MIT license.</p>
+  <!-- Sticky Bottom Player Bar (Spotify-style) -->
+  <div id="playerBar" class="player-bar hidden">
+    <div class="player-bar-content">
+      <!-- LEFT: Episode Info -->
+      <div class="now-playing">
+        <img id="playerCover" class="player-cover" src="" alt="Episode cover">
+        <div class="player-info">
+          <div class="player-title" id="playerTitle">No episode playing</div>
+          <div class="player-date" id="playerDate"></div>
+        </div>
+      </div>
+
+      <!-- CENTER: Playback Controls & Progress -->
+      <div class="playback-controls">
+        <!-- Primary Controls -->
+        <div class="playback-controls-buttons">
+          <button id="skipBackBtn" class="control-icon" title="Back 15s">
+            <svg viewBox="0 0 24 24" fill="currentColor">
+              <path d="M11.99 5V1l-5 5 5 5V7c3.31 0 6 2.69 6 6s-2.69 6-6 6-6-2.69-6-6h-2c0 4.42 3.58 8 8 8s8-3.58 8-8-3.58-8-8-8z"/>
+            </svg>
+            <span class="skip-label">15</span>
+          </button>
+
+          <button id="playPauseBtn" class="play-pause-circle" title="Play/Pause">
+            <svg id="playIcon" class="icon-play" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M8 5v14l11-7z"/>
+            </svg>
+            <svg id="pauseIcon" class="icon-pause hidden" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M6 4h4v16H6V4zm8 0h4v16h-4V4z"/>
+            </svg>
+          </button>
+
+          <button id="skipForwardBtn" class="control-icon" title="Forward 15s">
+            <svg viewBox="0 0 24 24" fill="currentColor">
+              <path d="M12 5V1l5 5-5 5V7c-3.31 0-6 2.69-6 6s2.69 6 6 6 6-2.69 6-6h2c0 4.42-3.58 8-8 8s-8-3.58-8-8 3.58-8 8-8z"/>
+            </svg>
+            <span class="skip-label">15</span>
+          </button>
+        </div>
+
+        <!-- Progress Bar (below controls) -->
+        <div class="progress-section">
+          <span class="time-current" id="timeCurrentPlayer">0:00</span>
+          <div class="progress-track" id="progressTrack">
+            <div class="progress-fill" id="progressFillPlayer"></div>
+            <input type="range" id="progressSlider" class="progress-slider" min="0" max="100" value="0" step="0.1">
+          </div>
+          <span class="time-total" id="timeTotalPlayer">0:00</span>
+        </div>
+      </div>
+
+      <!-- RIGHT: Secondary Controls -->
+      <div class="player-options">
+        <button class="control-icon" id="volumeBtn" title="Mute/Unmute">
+          <svg class="icon-volume" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z"/>
+          </svg>
+        </button>
+        <input type="range" id="volumeSlider" class="volume-slider" min="0" max="100" value="80">
+        <button id="speedBtn" class="speed-btn" title="Playback speed">1x</button>
+      </div>
     </div>
-  </footer>
+  </div>
+
+  <!-- Hidden audio element -->
+  <audio id="audioElement" preload="metadata"></audio>
 
   <script src="./js/config.js"></script>
-  <script src="./js/podcast.js" defer></script>
+  <script src="./js/podcast.js"></script>
 </body>
 </html>
