@@ -8,7 +8,9 @@ const API_CONFIG = {
   // API endpoints
   ENDPOINTS: {
     GENERATE_NEWS_SCRIPT: '/api/generate-news-script',
+    GENERATE_PODCAST: '/api/generate-podcast',
     TAKE_TEST: '/api/take_test',
+    BATTLE: '/api/battle',
     HEALTH: '/health'
   }
 };
