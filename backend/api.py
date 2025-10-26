@@ -5,10 +5,11 @@ import os
 import json
 import re
 from openai import OpenAI
-from typing import List
+from typing import List, Optional, Dict
 from .utils import parse_response_to_likert, compute_axis_score
 from .providers import call_model
-from .supabase_db import update_ratings, get_all_ratings, init_database
+from .supabase_db import update_ratings, get_all_ratings, init_database, store_vote_tags, ensure_tags_table_exists
+from .tags import calculate_dimension_scores, validate_tag, get_all_tags
 
 
 app = FastAPI()
@@ -61,6 +62,14 @@ class VoteRequest(BaseModel):
     winner_model: str
     loser_model: str
     prompt: str = None  # Optional: for logging/analytics
+
+
+class VoteWithTagsRequest(BaseModel):
+    winner_model: str
+    loser_model: str
+    tags: List[str] = []
+    topic: Optional[str] = None
+    debate_id: Optional[str] = None
 
 
 class DebateRequest(BaseModel):
@@ -217,6 +226,70 @@ def vote(req: VoteRequest):
         }
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Vote failed: {str(e)}")
+
+
+@app.post("/api/vote-with-tags")
+def vote_with_tags(req: VoteWithTagsRequest):
+    """Record vote with tag annotations and calculate dimension scores."""
+    if not req.winner_model or not req.loser_model:
+        raise HTTPException(status_code=400, detail="winner_model and loser_model are required")
+    
+    # Validate all tags
+    for tag in req.tags:
+        if not validate_tag(tag):
+            raise HTTPException(status_code=400, detail=f"Invalid tag: {tag}")
+    
+    try:
+        # Initialize tags table if needed
+        ensure_tags_table_exists()
+        
+        # Update Elo ratings
+        new_winner_rating, new_loser_rating = update_ratings(req.winner_model, req.loser_model)
+        
+        # Calculate dimension scores from tags
+        dimension_scores = calculate_dimension_scores(req.tags)
+        
+        # Store tags in database
+        from .tags import TAGS_BY_CATEGORY
+        tag_categories = {}
+        for category, tags_dict in TAGS_BY_CATEGORY.items():
+            for tag_name in tags_dict:
+                tag_categories[tag_name] = category.value
+        
+        store_vote_tags(
+            winner_model=req.winner_model,
+            loser_model=req.loser_model,
+            tags=req.tags,
+            tag_categories=tag_categories
+        )
+        
+        return {
+            "success": True,
+            "winner_model": req.winner_model,
+            "winner_new_rating": round(new_winner_rating, 2),
+            "loser_model": req.loser_model,
+            "loser_new_rating": round(new_loser_rating, 2),
+            "tags_recorded": len(req.tags),
+            "tags": req.tags,
+            "dimension_scores": {k: round(v, 3) for k, v in dimension_scores.items()},
+        }
+    except Exception as e:
+        print(f"Vote with tags error: {e}")
+        raise HTTPException(status_code=500, detail=f"Vote with tags failed: {str(e)}")
+
+
+@app.get("/api/tags")
+def get_tags():
+    """Get all available tags organized by category."""
+    try:
+        tags = get_all_tags()
+        return {
+            "success": True,
+            "tags": tags,
+            "tag_count": sum(len(tag_dict) for tag_dict in tags.values())
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to fetch tags: {str(e)}")
 
 
 @app.get("/api/ratings")

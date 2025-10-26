@@ -306,6 +306,144 @@ def reset_ratings():
         conn.close()
 
 
+def ensure_tags_table_exists():
+    """Check if vote_tags table exists, create if not."""
+    conn = get_db_connection()
+    try:
+        cursor = conn.cursor()
+        # Check if table exists
+        cursor.execute("""
+            SELECT EXISTS (
+                SELECT FROM information_schema.tables 
+                WHERE table_name = 'vote_tags'
+            );
+        """)
+        exists = cursor.fetchone()[0]
+        
+        if not exists:
+            print("⚠️  vote_tags table not found, creating...")
+            cursor.execute("""
+                CREATE TABLE vote_tags (
+                    id SERIAL PRIMARY KEY,
+                    winner_model VARCHAR(255) NOT NULL,
+                    loser_model VARCHAR(255) NOT NULL,
+                    tag_name VARCHAR(100) NOT NULL,
+                    tag_category VARCHAR(50),
+                    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                );
+            """)
+            
+            cursor.execute("""
+                CREATE INDEX idx_vote_tags_models ON vote_tags(winner_model, loser_model);
+            """)
+            
+            cursor.execute("""
+                CREATE INDEX idx_vote_tags_name ON vote_tags(tag_name);
+            """)
+            
+            conn.commit()
+            print("✅ vote_tags table created successfully")
+        
+    except Exception as e:
+        print(f"Error with vote_tags table: {e}")
+        conn.rollback()
+        raise
+    finally:
+        cursor.close()
+        conn.close()
+
+
+def store_vote_tags(winner_model: str, loser_model: str, tags: List[str], 
+                    tag_categories: Dict[str, str] = None) -> bool:
+    """
+    Store tags for a vote.
+    
+    Args:
+        winner_model: Model that won
+        loser_model: Model that lost
+        tags: List of tag names
+        tag_categories: Optional dict mapping tag names to categories
+        
+    Returns:
+        True if successful
+    """
+    ensure_tags_table_exists()
+    
+    conn = get_db_connection()
+    try:
+        cursor = conn.cursor()
+        
+        for tag in tags:
+            category = tag_categories.get(tag, "unknown") if tag_categories else "unknown"
+            cursor.execute("""
+                INSERT INTO vote_tags (winner_model, loser_model, tag_name, tag_category)
+                VALUES (%s, %s, %s, %s)
+            """, (winner_model, loser_model, tag, category))
+        
+        conn.commit()
+        return True
+        
+    except Exception as e:
+        print(f"Error storing tags: {e}")
+        conn.rollback()
+        raise
+    finally:
+        cursor.close()
+        conn.close()
+
+
+def get_model_tag_distribution(model: str, as_winner: bool = True) -> Dict[str, float]:
+    """
+    Get distribution of tags for a model's arguments.
+    
+    Args:
+        model: Model name
+        as_winner: If True, get tags where model won. If False, tags where it lost.
+        
+    Returns:
+        Dict mapping tag names to their frequency (0.0-1.0)
+    """
+    ensure_tags_table_exists()
+    
+    conn = get_db_connection()
+    try:
+        cursor = conn.cursor(cursor_factory=RealDictCursor)
+        
+        if as_winner:
+            cursor.execute("""
+                SELECT tag_name, COUNT(*) as count
+                FROM vote_tags
+                WHERE winner_model = %s
+                GROUP BY tag_name
+                ORDER BY count DESC
+            """, (model,))
+        else:
+            cursor.execute("""
+                SELECT tag_name, COUNT(*) as count
+                FROM vote_tags
+                WHERE loser_model = %s
+                GROUP BY tag_name
+                ORDER BY count DESC
+            """, (model,))
+        
+        results = cursor.fetchall()
+        total = sum(r['count'] for r in results)
+        
+        if total == 0:
+            return {}
+        
+        return {
+            r['tag_name']: r['count'] / total
+            for r in results
+        }
+        
+    except Exception as e:
+        print(f"Error fetching tag distribution: {e}")
+        return {}
+    finally:
+        cursor.close()
+        conn.close()
+
 
 # Note: Do NOT define FastAPI app here. This is a utility module only.
 # All endpoints are defined in backend/api.py
