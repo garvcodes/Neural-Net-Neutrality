@@ -46,7 +46,7 @@
           </tr>
         </thead>
         <tbody>
-          <!-- JS will populate -->
+          <tr><td colspan="5" style="text-align: center; padding: 2rem;">Loading ratings...</td></tr>
         </tbody>
       </table>
     </div>
@@ -58,7 +58,84 @@
     </div>
   </footer>
 
-  <script src="./js/config.js" defer></script>
-  <script src="./js/ratings.js" defer></script>
+  <script>
+    async function loadRatings() {
+      const tableBody = document.querySelector("#ratings-table tbody");
+      
+      try {
+        console.log("Fetching ratings from http://127.0.0.1:8000/ratings");
+        
+        const res = await fetch("http://127.0.0.1:8000/ratings", {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+
+        console.log("Response status:", res.status);
+        
+        if (!res.ok) {
+          throw new Error(`HTTP error! status: ${res.status}`);
+        }
+
+        const json = await res.json();
+        console.log("Received data:", json);
+
+        if (!json.success) {
+          tableBody.innerHTML = `<tr><td colspan="5" style="text-align: center; color: #e74c3c;">Error: ${json.error || 'Unknown error'}</td></tr>`;
+          return;
+        }
+
+        const data = json.data;
+        
+        // Check if we have any data
+        if (Object.keys(data).length === 0) {
+          tableBody.innerHTML = `<tr><td colspan="5" style="text-align: center; color: #888;">No ratings yet. Start a battle to generate ratings!</td></tr>`;
+          return;
+        }
+
+        const sorted = Object.entries(data)
+          .sort((a, b) => b[1].rating - a[1].rating);
+
+        tableBody.innerHTML = "";
+
+        for (const [model, stats] of sorted) {
+          const total = stats.wins + stats.losses;
+          const winRate = total > 0
+            ? ((stats.wins / total) * 100).toFixed(1) + "%"
+            : "—";
+
+          const tr = document.createElement("tr");
+          tr.innerHTML = `
+            <td>${model}</td>
+            <td>${stats.rating.toFixed(2)}</td>
+            <td>${stats.wins}</td>
+            <td>${stats.losses}</td>
+            <td>${winRate}</td>
+          `;
+          tableBody.appendChild(tr);
+        }
+
+      } catch (err) {
+        console.error("Error fetching ratings:", err);
+        tableBody.innerHTML = `
+          <tr>
+            <td colspan="5" style="text-align: center; color: #e74c3c; padding: 2rem;">
+              <strong>Connection error</strong><br>
+              <small>Make sure your FastAPI server is running on http://127.0.0.1:8000</small><br>
+              <small style="color: #888;">${err.message}</small>
+            </td>
+          </tr>
+        `;
+      }
+    }
+
+    // Load ratings when page loads
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', loadRatings);
+    } else {
+      loadRatings();
+    }
+  </script>
 </body>
 </html>

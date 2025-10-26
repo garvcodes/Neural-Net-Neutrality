@@ -43,6 +43,17 @@ document.addEventListener("DOMContentLoaded", () => {
   let currentModelA = "gpt-4o-mini";
   let currentModelB = "gemini-2.0-flash";
 
+  // Map API model IDs to display names (matching your database)
+  const modelDisplayNames = {
+    "gpt-4o-mini": "OpenAI GPT-4o Mini",
+    "gpt-4o": "OpenAI GPT-4o",
+    "gpt-3.5-turbo": "OpenAI GPT-3.5 Turbo",
+    "claude-3-haiku-20240307": "Claude 3 Haiku",
+    "claude-3-sonnet-20240229": "Claude 3 Sonnet",
+    "gemini-1.5-pro": "Gemini 1.5 Pro",
+    "gemini-2.0-flash": "Gemini 2.0 Flash"
+  };
+
   // Initialize labels immediately
   updateModelLabel(modelASelect, modelALabel);
   updateModelLabel(modelBSelect, modelBLabel);
@@ -272,39 +283,65 @@ document.addEventListener("DOMContentLoaded", () => {
     dimensionScores.classList.remove("hidden");
   }
 
-  async function submitVote(winnerModel, loserModel, button) {
-    button.disabled = true;
+  async function submitVote(winnerModelId, loserModelId, button, displayName) {
+    // Disable both buttons to prevent double voting
+    voteA.disabled = true;
+    voteB.disabled = true;
+    
     const originalText = button.textContent;
-    button.textContent = "Voting...";
+    button.textContent = "Submitting vote...";
 
     try {
-      const resp = await fetch(`${API_CONFIG.BACKEND_URL}/api/vote`, {
+      // Use display names for database (matching your init_database models)
+      const winnerName = modelDisplayNames[winnerModelId];
+      const loserName = modelDisplayNames[loserModelId];
+
+      console.log("Voting:", { winner: winnerName, loser: loserName });
+
+      const resp = await fetch(`http://127.0.0.1:8000/api/vote`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          winner_model: winnerModel,
-          loser_model: loserModel,
+          winner_model: winnerName,
+          loser_model: loserName,
           prompt: currentPrompt,
         }),
       });
 
       const data = await resp.json();
+      console.log("Vote response:", data);
+
       if (data.success) {
-        button.textContent = `✓ ${winnerModel.split('-')[0].toUpperCase()} now leads!`;
+        // Show new ratings if available
+        const ratingInfo = data.new_ratings 
+          ? ` (${data.new_ratings.winner.toFixed(0)} → ${data.new_ratings.loser.toFixed(0)})`
+          : '';
+        
+        button.textContent = `✓ Vote recorded!${ratingInfo}`;
+        
+        // Keep buttons disabled after vote
         setTimeout(() => {
-          button.textContent = originalText;
-          button.disabled = false;
+          button.textContent = "✓ Already voted";
         }, 2000);
       } else {
-        button.textContent = "Vote failed";
-        button.disabled = false;
+        button.textContent = "Vote failed: " + (data.error || "Unknown error");
+        // Re-enable buttons on failure
+        setTimeout(() => {
+          voteA.disabled = false;
+          voteB.disabled = false;
+          button.textContent = originalText;
+        }, 3000);
       }
     } catch (err) {
       console.error("Vote error:", err);
-      button.textContent = "Error voting";
-      button.disabled = false;
+      button.textContent = "Network error";
+      // Re-enable buttons on error
+      setTimeout(() => {
+        voteA.disabled = false;
+        voteB.disabled = false;
+        button.textContent = originalText;
+      }, 3000);
     }
   }
 
 });
-

@@ -43,6 +43,121 @@
             <a class="btn ghost" href="#how">Contribute data</a>
           </div>
         </div>
+        <div class = "hero-right">
+          <div class="tv-screen">
+            <div class="full-static active"></div>
+            <div class="static-overlay"></div>
+            <div class="scanlines"></div>
+            <div class="content">
+              <div class="model-header">
+                <span class="model-logo">🤖</span>
+                <span class="model-name">GPT-4:</span>
+              </div>
+              <div class="model-output" id="output"></div>
+            </div>
+            <div class="nav-arrows">
+              <button class="arrow" id="prev-channel">◄</button>
+              <button class="arrow" id="next-channel">►</button>
+            </div>
+        </div>
+      </div>
+  <script>
+    const models = [
+      {
+        emoji: '🤖',
+        name: 'GPT-4',
+        output: 'As an AI assistant, I aim to provide balanced, factual information while acknowledging diverse perspectives on political topics. My responses are designed to be helpful and informative without promoting any particular ideology...'
+      },
+      {
+        emoji: '🧠',
+        name: 'Claude',
+        output: 'I strive to present nuanced views on complex political questions. When discussing policy issues, I consider multiple stakeholder perspectives and try to highlight trade-offs rather than advocating for specific positions...'
+      },
+      {
+        emoji: '✨',
+        name: 'Gemini',
+        output: 'My goal is to deliver comprehensive, well-researched responses. On political matters, I provide context from various viewpoints and emphasize verified information over speculation or partisan framing...'
+      },
+      {
+        emoji: '🎯',
+        name: 'LLaMA',
+        output: 'I focus on accuracy and objectivity when addressing political queries. My training emphasizes factual correctness and the presentation of different angles on contentious issues without editorial bias...'
+      }
+    ];
+
+    let currentModelIndex = 0;
+    const outputEl = document.getElementById('output');
+    const logoEl = document.querySelector('.model-logo');
+    const nameEl = document.querySelector('.model-name');
+    const contentEl = document.querySelector('.content');
+    const fullStaticEl = document.querySelector('.full-static');
+    const tvScreen = document.querySelector('.tv-screen');
+    const prevBtn = document.getElementById('prev-channel');
+    const nextBtn = document.getElementById('next-channel');
+
+    async function typeWriter(text, element) {
+      element.textContent = '';
+      const maxChars = 400; // Truncate if too long
+      const displayText = text.length > maxChars ? text.substring(0, maxChars) + '...' : text;
+      
+      for (let i = 0; i < displayText.length; i++) {
+        element.textContent += displayText[i];
+        await new Promise(resolve => setTimeout(resolve, 15)); // 30ms per character
+      }
+      
+      // Add blinking cursor at end
+      const cursor = document.createElement('span');
+      cursor.className = 'cursor';
+      element.appendChild(cursor);
+    }
+
+    function showStatic() {
+      fullStaticEl.classList.add('active');
+      contentEl.classList.remove('visible');
+    }
+
+    function hideStatic() {
+      setTimeout(() => {
+        fullStaticEl.classList.remove('active');
+        contentEl.classList.add('visible');
+      }, 800);
+    }
+
+    async function updateContent(index) {
+      const model = models[index];
+      logoEl.textContent = model.emoji;
+      nameEl.textContent = model.name + ':';
+      
+      // Wait for static to clear, then type
+      setTimeout(async () => {
+        await typeWriter(model.output, outputEl);
+      }, 900);
+    }
+
+    function changeChannel(direction) {
+      // Bounce animation
+      tvScreen.classList.remove('bounce');
+      void tvScreen.offsetWidth; // Trigger reflow
+      tvScreen.classList.add('bounce');
+      
+      showStatic();
+      
+      currentModelIndex = (currentModelIndex + direction + models.length) % models.length;
+      updateContent(currentModelIndex);
+      
+      hideStatic();
+    }
+
+    prevBtn.addEventListener('click', () => changeChannel(-1));
+    nextBtn.addEventListener('click', () => changeChannel(1));
+
+    // Initial load
+    setTimeout(() => {
+      hideStatic();
+      updateContent(0);
+    }, 1000);
+  </script>
+  </div>
         <div class="hero-card">
           <div class="card-header">Snapshot</div>
           <div class="card-body">
@@ -88,9 +203,9 @@
       <div class="container">
         <h2 class="section-title">How it works</h2>
         <ol class="how-list">
-          <li><strong>Collect</strong> prompts and responses from model versions over time.</li>
-          <li><strong>Score</strong> outputs with a consistent rubric to map political leanings into structured signals.</li>
-          <li><strong>Visualize</strong> trends and make the raw data downloadable for researchers.</li>
+          <li style="font-size:20px;"><strong>Collect</strong> prompts and responses from model versions over time.</li>
+          <li style="font-size:20px;"><strong>Score</strong> outputs with a consistent rubric to map political leanings into structured signals.</li>
+          <li style="font-size:20px;"><strong>Visualize</strong> trends and make the raw data downloadable for researchers.</li>
         </ol>
       </div>
     </section>
