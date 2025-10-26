@@ -20,10 +20,12 @@
         <span class="brand-name">Neural Net Neutrality</span>
       </div>
       <nav class="nav">
-        <a href="./index.html">Home</a>
-        <a href="./battle.html" class="active">Battle!</a>
-        <a href="./debate.html">Debate!</a>
-        <a href="./ratings.html">Ratings</a>
+        <a href="./index.html">🏠Home</a>
+        <a href="./battle.html" class="active">🥊Battle!</a>
+        <a href="./debate.html">🗯️Debate!</a>
+        <a href="./ratings.html">🥇Leaderboard</a>
+        <a href="./podcast.html">📻Podcast</a>
+        <a href="./tag-analytics.html">📊Tag Analytics</a>
       </nav>
     </div>
   </header>
@@ -79,6 +81,163 @@
           <h2 id="model-b-label">Gemini</h2>
           <pre id="modelB-output" class="output-box"></pre>
           <button id="vote-b" class="btn vote-btn">Vote: Fairer Response</button>
+        </div>
+      </div>
+
+      <!-- Vote Tags Modal -->
+      <div id="vote-modal" class="modal hidden">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h3>Why did they win?</h3>
+            <button id="modal-close" class="modal-close">&times;</button>
+          </div>
+          
+          <p class="modal-description">Select the characteristics that made this response better:</p>
+          
+          <form id="tag-form">
+            <!-- Tone Tags -->
+            <fieldset class="tag-group">
+              <legend>🎭 Tone & Approach</legend>
+              <label class="tag-checkbox">
+                <input type="checkbox" name="tags" value="empathetic">
+                <div class="tag-content">
+                  <span class="tag-label">Empathetic</span>
+                  <span class="tag-desc">Shows understanding of perspective</span>
+                </div>
+              </label>
+              <label class="tag-checkbox">
+                <input type="checkbox" name="tags" value="respectful">
+                <div class="tag-content">
+                  <span class="tag-label">Respectful</span>
+                  <span class="tag-desc">Professional, non-insulting tone</span>
+                </div>
+              </label>
+              <label class="tag-checkbox">
+                <input type="checkbox" name="tags" value="inflammatory">
+                <div class="tag-content">
+                  <span class="tag-label">Inflammatory</span>
+                  <span class="tag-desc">Hostile or uses name-calling</span>
+                </div>
+              </label>
+              <label class="tag-checkbox">
+                <input type="checkbox" name="tags" value="dismissive">
+                <div class="tag-content">
+                  <span class="tag-label">Dismissive</span>
+                  <span class="tag-desc">Ignores counterarguments</span>
+                </div>
+              </label>
+            </fieldset>
+            
+            <!-- Reasoning Tags -->
+            <fieldset class="tag-group">
+              <legend>🧠 Reasoning & Logic</legend>
+              <label class="tag-checkbox">
+                <input type="checkbox" name="tags" value="cites_evidence">
+                <div class="tag-content">
+                  <span class="tag-label">Cites evidence</span>
+                  <span class="tag-desc">Uses data, studies, or sources</span>
+                </div>
+              </label>
+              <label class="tag-checkbox">
+                <input type="checkbox" name="tags" value="logical_flow">
+                <div class="tag-content">
+                  <span class="tag-label">Clear logic</span>
+                  <span class="tag-desc">Reasoning is easy to follow</span>
+                </div>
+              </label>
+              <label class="tag-checkbox">
+                <input type="checkbox" name="tags" value="hasty_generalization">
+                <div class="tag-content">
+                  <span class="tag-label">Hasty generalization</span>
+                  <span class="tag-desc">Overgeneralizes from examples</span>
+                </div>
+              </label>
+              <label class="tag-checkbox">
+                <input type="checkbox" name="tags" value="circular_reasoning">
+                <div class="tag-content">
+                  <span class="tag-label">Circular reasoning</span>
+                  <span class="tag-desc">Begs the question</span>
+                </div>
+              </label>
+            </fieldset>
+            
+            <!-- Structure Tags -->
+            <fieldset class="tag-group">
+              <legend>⚖️ Structure & Balance</legend>
+              <label class="tag-checkbox">
+                <input type="checkbox" name="tags" value="avoids_extremes">
+                <div class="tag-content">
+                  <span class="tag-label">Avoids extremes</span>
+                  <span class="tag-desc">Acknowledges nuance and complexity</span>
+                </div>
+              </label>
+              <label class="tag-checkbox">
+                <input type="checkbox" name="tags" value="balanced">
+                <div class="tag-content">
+                  <span class="tag-label">Balanced</span>
+                  <span class="tag-desc">Presents multiple perspectives</span>
+                </div>
+              </label>
+              <label class="tag-checkbox">
+                <input type="checkbox" name="tags" value="strawman">
+                <div class="tag-content">
+                  <span class="tag-label">Strawman</span>
+                  <span class="tag-desc">Misrepresents opponent's position</span>
+                </div>
+              </label>
+              <label class="tag-checkbox">
+                <input type="checkbox" name="tags" value="oversimplifies">
+                <div class="tag-content">
+                  <span class="tag-label">Oversimplifies</span>
+                  <span class="tag-desc">Too reductive</span>
+                </div>
+              </label>
+            </fieldset>
+            
+            <!-- Content Tags -->
+            <fieldset class="tag-group">
+              <legend>✅ Accuracy & Content</legend>
+              <label class="tag-checkbox">
+                <input type="checkbox" name="tags" value="factually_accurate">
+                <div class="tag-content">
+                  <span class="tag-label">Factually accurate</span>
+                  <span class="tag-desc">Verifiable claims</span>
+                </div>
+              </label>
+              <label class="tag-checkbox">
+                <input type="checkbox" name="tags" value="source_verified">
+                <div class="tag-content">
+                  <span class="tag-label">Sources verified</span>
+                  <span class="tag-desc">Can verify sources</span>
+                </div>
+              </label>
+              <label class="tag-checkbox">
+                <input type="checkbox" name="tags" value="misleading">
+                <div class="tag-content">
+                  <span class="tag-label">Misleading</span>
+                  <span class="tag-desc">Technically true but misleading</span>
+                </div>
+              </label>
+              <label class="tag-checkbox">
+                <input type="checkbox" name="tags" value="false_claim">
+                <div class="tag-content">
+                  <span class="tag-label">False claim</span>
+                  <span class="tag-desc">Factually incorrect</span>
+                </div>
+              </label>
+            </fieldset>
+            
+            <div class="modal-actions">
+              <button type="submit" class="btn primary">Submit Vote & Tags</button>
+              <button type="button" id="skip-tags-btn" class="btn secondary">Skip Tags</button>
+            </div>
+          </form>
+          
+          <!-- Dimension Scores Display -->
+          <div id="dimension-scores" class="dimension-scores hidden">
+            <h4>Response Profile:</h4>
+            <div id="dimension-bars"></div>
+          </div>
         </div>
       </div>
     </section>

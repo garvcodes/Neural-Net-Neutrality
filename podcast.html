@@ -1,0 +1,154 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>AI Politics Daily — Neural Net Neutrality</title>
+  <meta name="description" content="Your daily AI-generated neutral news podcast" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./css/styles.css">
+  <link rel="stylesheet" href="./css/podcast.css">
+</head>
+
+<body class="podcast-app">
+  <header class="site-header">
+    <div class="container header-inner">
+      <div class="brand">
+        <img src="./assets/logo.svg" alt="Neural Net Neutrality logo" class="logo">
+        <span class="brand-name">Neural Net Neutrality</span>
+      </div>
+      <nav class="nav">
+        <a href="./index.html">🏠Home</a>
+        <a href="./battle.html">🥊Battle!</a>
+        <a href="./debate.html">🗯️Debate!</a>
+        <a href="./ratings.html">🥇Leaderboard</a>
+        <a href="./podcast.html" class="active">📻Podcast</a>
+        <a href="./tag-analytics.html">📊Tag Analytics</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="podcast-main">
+    <!-- Loading State -->
+    <div id="loadingState" class="loading-state">
+      <div class="loading-spinner"></div>
+      <p>Loading episodes...</p>
+    </div>
+
+    <!-- Error State -->
+    <div id="errorState" class="error-state hidden">
+      <div class="error-icon">⚠️</div>
+      <h2>Failed to load episodes</h2>
+      <p id="errorMessage"></p>
+      <button class="btn secondary" onclick="location.reload()">Retry</button>
+    </div>
+
+    <!-- Podcast Library -->
+    <div id="podcastLibrary" class="podcast-library hidden">
+      <!-- Hero / Featured Episode -->
+      <section class="featured-episode">
+        <div class="container">
+          <div class="featured-content" id="featuredEpisode">
+            <!-- Populated by JavaScript -->
+          </div>
+        </div>
+      </section>
+
+      <!-- Episode Library Grid -->
+      <section class="episode-library">
+        <div class="container">
+          <div class="library-header">
+            <h2>All Episodes</h2>
+            <div class="sort-controls">
+              <select id="sortSelect" class="sort-select">
+                <option value="newest">Newest First</option>
+                <option value="oldest">Oldest First</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="episode-grid" id="episodeGrid">
+            <!-- Episode cards populated by JavaScript -->
+          </div>
+
+          <div class="load-more-container hidden" id="loadMoreContainer">
+            <button class="btn secondary" id="loadMoreBtn">Load More Episodes</button>
+          </div>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <!-- Sticky Bottom Player Bar (Spotify-style) -->
+  <div id="playerBar" class="player-bar hidden">
+    <div class="player-bar-content">
+      <!-- LEFT: Episode Info -->
+      <div class="now-playing">
+        <img id="playerCover" class="player-cover" src="" alt="Episode cover">
+        <div class="player-info">
+          <div class="player-title" id="playerTitle">No episode playing</div>
+          <div class="player-date" id="playerDate"></div>
+        </div>
+      </div>
+
+      <!-- CENTER: Playback Controls & Progress -->
+      <div class="playback-controls">
+        <!-- Primary Controls -->
+        <div class="playback-controls-buttons">
+          <button id="skipBackBtn" class="control-icon" title="Back 15s">
+            <svg viewBox="0 0 24 24" fill="currentColor">
+              <path d="M11.99 5V1l-5 5 5 5V7c3.31 0 6 2.69 6 6s-2.69 6-6 6-6-2.69-6-6h-2c0 4.42 3.58 8 8 8s8-3.58 8-8-3.58-8-8-8z"/>
+            </svg>
+            <span class="skip-label">15</span>
+          </button>
+
+          <button id="playPauseBtn" class="play-pause-circle" title="Play/Pause">
+            <svg id="playIcon" class="icon-play" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M8 5v14l11-7z"/>
+            </svg>
+            <svg id="pauseIcon" class="icon-pause hidden" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M6 4h4v16H6V4zm8 0h4v16h-4V4z"/>
+            </svg>
+          </button>
+
+          <button id="skipForwardBtn" class="control-icon" title="Forward 15s">
+            <svg viewBox="0 0 24 24" fill="currentColor">
+              <path d="M12 5V1l5 5-5 5V7c-3.31 0-6 2.69-6 6s2.69 6 6 6 6-2.69 6-6h2c0 4.42-3.58 8-8 8s-8-3.58-8-8 3.58-8 8-8z"/>
+            </svg>
+            <span class="skip-label">15</span>
+          </button>
+        </div>
+
+        <!-- Progress Bar (below controls) -->
+        <div class="progress-section">
+          <span class="time-current" id="timeCurrentPlayer">0:00</span>
+          <div class="progress-track" id="progressTrack">
+            <div class="progress-fill" id="progressFillPlayer"></div>
+            <input type="range" id="progressSlider" class="progress-slider" min="0" max="100" value="0" step="0.1">
+          </div>
+          <span class="time-total" id="timeTotalPlayer">0:00</span>
+        </div>
+      </div>
+
+      <!-- RIGHT: Secondary Controls -->
+      <div class="player-options">
+        <button class="control-icon" id="volumeBtn" title="Mute/Unmute">
+          <svg class="icon-volume" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z"/>
+          </svg>
+        </button>
+        <input type="range" id="volumeSlider" class="volume-slider" min="0" max="100" value="80">
+        <button id="speedBtn" class="speed-btn" title="Playback speed">1x</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Hidden audio element -->
+  <audio id="audioElement" preload="metadata"></audio>
+
+  <script src="./js/config.js"></script>
+  <script src="./js/podcast.js"></script>
+</body>
+</html>

@@ -306,6 +306,445 @@ def reset_ratings():
         conn.close()
 
 
+def ensure_tags_table_exists():
+    """Check if vote_tags table exists, create if not."""
+    conn = get_db_connection()
+    try:
+        cursor = conn.cursor()
+        # Check if table exists
+        cursor.execute("""
+            SELECT EXISTS (
+                SELECT FROM information_schema.tables 
+                WHERE table_name = 'vote_tags'
+            );
+        """)
+        exists = cursor.fetchone()[0]
+        
+        if not exists:
+            print("⚠️  vote_tags table not found, creating...")
+            cursor.execute("""
+                CREATE TABLE vote_tags (
+                    id SERIAL PRIMARY KEY,
+                    winner_model VARCHAR(255) NOT NULL,
+                    loser_model VARCHAR(255) NOT NULL,
+                    tag_name VARCHAR(100) NOT NULL,
+                    tag_category VARCHAR(50),
+                    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                );
+            """)
+            
+            cursor.execute("""
+                CREATE INDEX idx_vote_tags_models ON vote_tags(winner_model, loser_model);
+            """)
+            
+            cursor.execute("""
+                CREATE INDEX idx_vote_tags_name ON vote_tags(tag_name);
+            """)
+            
+            conn.commit()
+            print("✅ vote_tags table created successfully")
+        
+    except Exception as e:
+        print(f"Error with vote_tags table: {e}")
+        conn.rollback()
+        raise
+    finally:
+        cursor.close()
+        conn.close()
+
+
+def store_vote_tags(winner_model: str, loser_model: str, tags: List[str], 
+                    tag_categories: Dict[str, str] = None) -> bool:
+    """
+    Store tags for a vote.
+    
+    Args:
+        winner_model: Model that won
+        loser_model: Model that lost
+        tags: List of tag names
+        tag_categories: Optional dict mapping tag names to categories
+        
+    Returns:
+        True if successful
+    """
+    ensure_tags_table_exists()
+    
+    conn = get_db_connection()
+    try:
+        cursor = conn.cursor()
+        
+        for tag in tags:
+            category = tag_categories.get(tag, "unknown") if tag_categories else "unknown"
+            cursor.execute("""
+                INSERT INTO vote_tags (winner_model, loser_model, tag_name, tag_category)
+                VALUES (%s, %s, %s, %s)
+            """, (winner_model, loser_model, tag, category))
+        
+        conn.commit()
+        return True
+        
+    except Exception as e:
+        print(f"Error storing tags: {e}")
+        conn.rollback()
+        raise
+    finally:
+        cursor.close()
+        conn.close()
+
+
+def get_model_tag_distribution(model: str, as_winner: bool = True) -> Dict[str, float]:
+    """
+    Get distribution of tags for a model's arguments.
+    
+    Args:
+        model: Model name
+        as_winner: If True, get tags where model won. If False, tags where it lost.
+        
+    Returns:
+        Dict mapping tag names to their frequency (0.0-1.0)
+    """
+    ensure_tags_table_exists()
+    
+    conn = get_db_connection()
+    try:
+        cursor = conn.cursor(cursor_factory=RealDictCursor)
+        
+        if as_winner:
+            cursor.execute("""
+                SELECT tag_name, COUNT(*) as count
+                FROM vote_tags
+                WHERE winner_model = %s
+                GROUP BY tag_name
+                ORDER BY count DESC
+            """, (model,))
+        else:
+            cursor.execute("""
+                SELECT tag_name, COUNT(*) as count
+                FROM vote_tags
+                WHERE loser_model = %s
+                GROUP BY tag_name
+                ORDER BY count DESC
+            """, (model,))
+        
+        results = cursor.fetchall()
+        total = sum(r['count'] for r in results)
+        
+        if total == 0:
+            return {}
+        
+        return {
+            r['tag_name']: r['count'] / total
+            for r in results
+        }
+        
+    except Exception as e:
+        print(f"Error fetching tag distribution: {e}")
+        return {}
+    finally:
+        cursor.close()
+        conn.close()
+
+
+def ensure_vote_dimension_scores_table_exists():
+    """Create vote_dimension_scores table if it doesn't exist."""
+    conn = get_db_connection()
+    try:
+        cursor = conn.cursor()
+        
+        # Check if table exists
+        cursor.execute("""
+            SELECT EXISTS (
+                SELECT FROM information_schema.tables 
+                WHERE table_name = 'vote_dimension_scores'
+            );
+        """)
+        exists = cursor.fetchone()[0]
+        
+        if not exists:
+            print("⚠️  vote_dimension_scores table not found, creating...")
+            cursor.execute("""
+                CREATE TABLE vote_dimension_scores (
+                    id SERIAL PRIMARY KEY,
+                    winner_model VARCHAR(255) NOT NULL,
+                    loser_model VARCHAR(255) NOT NULL,
+                    winner_empathy FLOAT DEFAULT 0.5,
+                    winner_aggressiveness FLOAT DEFAULT 0.5,
+                    winner_evidence_use FLOAT DEFAULT 0.5,
+                    winner_political_economic FLOAT DEFAULT 0.0,
+                    winner_political_social FLOAT DEFAULT 0.0,
+                    loser_empathy FLOAT DEFAULT 0.5,
+                    loser_aggressiveness FLOAT DEFAULT 0.5,
+                    loser_evidence_use FLOAT DEFAULT 0.5,
+                    loser_political_economic FLOAT DEFAULT 0.0,
+                    loser_political_social FLOAT DEFAULT 0.0,
+                    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                );
+            """)
+            
+            cursor.execute("""
+                CREATE INDEX idx_vote_dim_winner ON vote_dimension_scores(winner_model);
+            """)
+            
+            cursor.execute("""
+                CREATE INDEX idx_vote_dim_loser ON vote_dimension_scores(loser_model);
+            """)
+            
+            conn.commit()
+            print("✅ vote_dimension_scores table created successfully")
+        
+    except Exception as e:
+        print(f"Error with vote_dimension_scores table: {e}")
+        conn.rollback()
+        raise
+    finally:
+        cursor.close()
+        conn.close()
+
+
+def store_dimension_scores(winner_model: str, loser_model: str,
+                          winner_scores: Dict[str, float],
+                          loser_scores: Dict[str, float]) -> bool:
+    """
+    Store dimension scores for both models in a vote.
+    
+    Args:
+        winner_model: Name of winning model
+        loser_model: Name of losing model
+        winner_scores: Dict of dimension scores for winner
+        loser_scores: Dict of dimension scores for loser
+        
+    Returns:
+        True if successful, False otherwise
+    """
+    ensure_vote_dimension_scores_table_exists()
+    
+    conn = get_db_connection()
+    try:
+        cursor = conn.cursor()
+        
+        cursor.execute("""
+            INSERT INTO vote_dimension_scores 
+            (winner_model, loser_model, 
+             winner_empathy, winner_aggressiveness, winner_evidence_use,
+             winner_political_economic, winner_political_social,
+             loser_empathy, loser_aggressiveness, loser_evidence_use,
+             loser_political_economic, loser_political_social)
+            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+        """, (
+            winner_model, loser_model,
+            winner_scores.get('empathy', 0.5),
+            winner_scores.get('aggressiveness', 0.5),
+            winner_scores.get('evidence_use', 0.5),
+            winner_scores.get('political_economic', 0.0),
+            winner_scores.get('political_social', 0.0),
+            loser_scores.get('empathy', 0.5),
+            loser_scores.get('aggressiveness', 0.5),
+            loser_scores.get('evidence_use', 0.5),
+            loser_scores.get('political_economic', 0.0),
+            loser_scores.get('political_social', 0.0)
+        ))
+        
+        conn.commit()
+        return True
+        
+    except Exception as e:
+        print(f"❌ Error storing dimension scores: {e}")
+        conn.rollback()
+        return False
+    finally:
+        cursor.close()
+        conn.close()
+
+
+def get_aggregated_dimension_scores(model_name: str = None) -> Dict:
+    """
+    Get aggregated dimension scores for models.
+    
+    Args:
+        model_name: Optional specific model to get scores for.
+                   If None, returns scores for all models.
+        
+    Returns:
+        Dict mapping model names to averaged dimension scores
+        Example:
+        {
+            "gpt-4o": {
+                "empathy": 0.72,
+                "aggressiveness": 0.38,
+                "evidence_use": 0.81,
+                "political_economic": 0.05,
+                "political_social": -0.08,
+                "vote_count": 24
+            },
+            ...
+        }
+    """
+    ensure_vote_dimension_scores_table_exists()
+    
+    conn = get_db_connection()
+    try:
+        cursor = conn.cursor(cursor_factory=RealDictCursor)
+        
+        # Query for winner scores
+        if model_name:
+            cursor.execute("""
+                SELECT 
+                    winner_model as model_name,
+                    COUNT(*) as vote_count,
+                    AVG(winner_empathy) as empathy,
+                    AVG(winner_aggressiveness) as aggressiveness,
+                    AVG(winner_evidence_use) as evidence_use,
+                    AVG(winner_political_economic) as political_economic,
+                    AVG(winner_political_social) as political_social
+                FROM vote_dimension_scores
+                WHERE winner_model = %s
+                GROUP BY winner_model
+                UNION ALL
+                SELECT 
+                    loser_model as model_name,
+                    COUNT(*) as vote_count,
+                    AVG(loser_empathy) as empathy,
+                    AVG(loser_aggressiveness) as aggressiveness,
+                    AVG(loser_evidence_use) as evidence_use,
+                    AVG(loser_political_economic) as political_economic,
+                    AVG(loser_political_social) as political_social
+                FROM vote_dimension_scores
+                WHERE loser_model = %s
+                GROUP BY loser_model
+            """, (model_name, model_name))
+        else:
+            cursor.execute("""
+                SELECT 
+                    winner_model as model_name,
+                    COUNT(*) as vote_count,
+                    AVG(winner_empathy) as empathy,
+                    AVG(winner_aggressiveness) as aggressiveness,
+                    AVG(winner_evidence_use) as evidence_use,
+                    AVG(winner_political_economic) as political_economic,
+                    AVG(winner_political_social) as political_social
+                FROM vote_dimension_scores
+                GROUP BY winner_model
+                UNION ALL
+                SELECT 
+                    loser_model as model_name,
+                    COUNT(*) as vote_count,
+                    AVG(loser_empathy) as empathy,
+                    AVG(loser_aggressiveness) as aggressiveness,
+                    AVG(loser_evidence_use) as evidence_use,
+                    AVG(loser_political_economic) as political_economic,
+                    AVG(loser_political_social) as political_social
+                FROM vote_dimension_scores
+                GROUP BY loser_model
+                ORDER BY vote_count DESC
+            """)
+        
+        results = cursor.fetchall()
+        
+        # Aggregate winner and loser scores for each model
+        aggregated = {}
+        for row in results:
+            model = row['model_name']
+            if model not in aggregated:
+                aggregated[model] = {
+                    'vote_count': 0,
+                    'scores': {'empathy': [], 'aggressiveness': [], 'evidence_use': [],
+                              'political_economic': [], 'political_social': []}
+                }
+            
+            aggregated[model]['vote_count'] += row['vote_count']
+            aggregated[model]['scores']['empathy'].append(row['empathy'])
+            aggregated[model]['scores']['aggressiveness'].append(row['aggressiveness'])
+            aggregated[model]['scores']['evidence_use'].append(row['evidence_use'])
+            aggregated[model]['scores']['political_economic'].append(row['political_economic'])
+            aggregated[model]['scores']['political_social'].append(row['political_social'])
+        
+        # Average the scores
+        final_result = {}
+        for model, data in aggregated.items():
+            scores = data['scores']
+            final_result[model] = {
+                'empathy': round(sum(scores['empathy']) / len(scores['empathy']), 3),
+                'aggressiveness': round(sum(scores['aggressiveness']) / len(scores['aggressiveness']), 3),
+                'evidence_use': round(sum(scores['evidence_use']) / len(scores['evidence_use']), 3),
+                'political_economic': round(sum(scores['political_economic']) / len(scores['political_economic']), 3),
+                'political_social': round(sum(scores['political_social']) / len(scores['political_social']), 3),
+                'vote_count': data['vote_count']
+            }
+        
+        return final_result
+        
+    except Exception as e:
+        print(f"❌ Error getting aggregated dimension scores: {e}")
+        return {}
+    finally:
+        cursor.close()
+        conn.close()
+
+
+def get_dimension_leaderboard(dimension: str, limit: int = 10) -> List[Dict]:
+    """
+    Get leaderboard for a specific dimension.
+    
+    Args:
+        dimension: Name of dimension (empathy, aggressiveness, evidence_use, etc.)
+        limit: Number of top models to return
+        
+    Returns:
+        List of dicts with model_name, score, and rank
+    """
+    ensure_vote_dimension_scores_table_exists()
+    
+    conn = get_db_connection()
+    try:
+        cursor = conn.cursor(cursor_factory=RealDictCursor)
+        
+        # Map dimension name to column names
+        dim_columns = {
+            'empathy': ('winner_empathy', 'loser_empathy'),
+            'aggressiveness': ('winner_aggressiveness', 'loser_aggressiveness'),
+            'evidence_use': ('winner_evidence_use', 'loser_evidence_use'),
+            'political_economic': ('winner_political_economic', 'loser_political_economic'),
+            'political_social': ('winner_political_social', 'loser_political_social')
+        }
+        
+        if dimension not in dim_columns:
+            return []
+        
+        winner_col, loser_col = dim_columns[dimension]
+        
+        cursor.execute(f"""
+            SELECT 
+                model_name,
+                AVG(score) as avg_score,
+                COUNT(*) as vote_count,
+                ROW_NUMBER() OVER (ORDER BY AVG(score) DESC) as rank
+            FROM (
+                SELECT winner_model as model_name, {winner_col} as score FROM vote_dimension_scores
+                UNION ALL
+                SELECT loser_model as model_name, {loser_col} as score FROM vote_dimension_scores
+            ) combined
+            GROUP BY model_name
+            ORDER BY avg_score DESC
+            LIMIT %s
+        """, (limit,))
+        
+        results = cursor.fetchall()
+        return [
+            {
+                'rank': row['rank'],
+                'model_name': row['model_name'],
+                'score': round(float(row['avg_score']), 3),
+                'vote_count': row['vote_count']
+            }
+            for row in results
+        ]
+    except Exception as e:
+        print(f"❌ Error getting dimension leaderboard: {e}")
+        return []
+    finally:
+        cursor.close()
+        conn.close()
+
 
 # Note: Do NOT define FastAPI app here. This is a utility module only.
 # All endpoints are defined in backend/api.py

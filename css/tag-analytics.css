@@ -1,0 +1,542 @@
+/* ========================================
+   TAG ANALYTICS CSS - Beige/Black Theme
+   ======================================== */
+
+.analytics-section {
+  max-width: 1400px;
+  padding: 60px 32px;
+  margin: 0 auto;
+}
+
+.analytics-title {
+  font-size: 2.5rem;
+  margin-bottom: 0.5rem;
+  color: var(--text-primary);
+  text-align: center;
+  font-weight: 600;
+  letter-spacing: -0.8px;
+}
+
+.analytics-subtitle {
+  text-align: center;
+  color: var(--text-secondary);
+  margin-bottom: 2.5rem;
+  font-size: 1.1rem;
+  font-weight: 400;
+}
+
+/* Filter Section */
+.filter-section {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 3rem;
+  padding: 1.5rem;
+  background: var(--card-bg);
+  border-radius: 16px;
+  border: 1.5px solid var(--border-black);
+  box-shadow: 0 4px 0 var(--accent-blue);
+}
+
+.filter-section label {
+  font-weight: 600;
+  color: var(--text-primary);
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.filter-select {
+  padding: 0.75rem 1rem;
+  font-size: 0.95rem;
+  border: 1.5px solid var(--border-black);
+  border-radius: 10px;
+  background: white;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-family: 'Poppins', sans-serif;
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+.filter-select:hover {
+  background: var(--bg-2);
+}
+
+.filter-select:focus {
+  outline: none;
+  border-color: var(--text-primary);
+  background: var(--bg-1);
+}
+
+/* Section Headers */
+.dimensions-section,
+.tags-section,
+.comparison-section {
+  margin-bottom: 4rem;
+}
+
+.dimensions-section h2,
+.tags-section h2,
+.comparison-section h2 {
+  font-size: 1.75rem;
+  color: var(--text-primary);
+  margin-bottom: 0.5rem;
+  font-weight: 600;
+  letter-spacing: -0.5px;
+}
+
+.section-desc {
+  color: var(--text-secondary);
+  margin-bottom: 2rem;
+  font-size: 0.95rem;
+  line-height: 1.6;
+}
+
+/* Dimensions Grid */
+.dimensions-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  gap: 2rem;
+  margin-bottom: 2rem;
+}
+
+.dimension-card {
+  background: var(--card-bg);
+  border: 1.5px solid var(--border-black);
+  border-radius: 16px;
+  padding: 1.5rem;
+  transition: all 0.2s ease;
+}
+
+.dimension-card:nth-child(1) {
+  box-shadow: 0 4px 0 var(--accent-blue);
+}
+
+.dimension-card:nth-child(2) {
+  box-shadow: 0 4px 0 var(--accent-red);
+}
+
+.dimension-card:nth-child(3) {
+  box-shadow: 0 4px 0 var(--accent-yellow);
+}
+
+.dimension-card:hover {
+  transform: translateY(-3px);
+}
+
+.dimension-card:nth-child(1):hover {
+  box-shadow: 0 7px 0 var(--accent-blue);
+}
+
+.dimension-card:nth-child(2):hover {
+  box-shadow: 0 7px 0 var(--accent-red);
+}
+
+.dimension-card:nth-child(3):hover {
+  box-shadow: 0 7px 0 var(--accent-yellow);
+}
+
+.dimension-header {
+  margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 1.5px solid var(--border-black);
+}
+
+.dimension-header h3 {
+  margin: 0 0 0.5rem 0;
+  font-size: 1.25rem;
+  color: var(--text-primary);
+  font-weight: 600;
+  letter-spacing: -0.3px;
+}
+
+.dimension-desc {
+  margin: 0;
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+
+/* Dimension Chart */
+.dimension-chart {
+  min-height: 200px;
+  margin-bottom: 1.5rem;
+  display: flex;
+  align-items: flex-end;
+  justify-content: flex-start;
+  gap: 0.75rem;
+  padding: 1rem;
+  background: var(--bg-1);
+  border-radius: 12px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  min-width: 0;
+  border: 1px solid rgba(10, 10, 10, 0.08);
+}
+
+.chart-bar {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex: 0 0 auto;
+  min-width: 60px;
+  width: 60px;
+}
+
+.bar-fill {
+  width: 100%;
+  background: var(--text-primary);
+  border-radius: 6px 6px 0 0;
+  min-height: 20px;
+  transition: all 0.2s ease;
+}
+
+.chart-bar:hover .bar-fill {
+  opacity: 0.8;
+}
+
+.bar-label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  text-align: center;
+  margin-top: 0.5rem;
+  word-wrap: break-word;
+}
+
+.bar-value {
+  font-size: 0.7rem;
+  color: var(--text-primary);
+  font-weight: 600;
+  margin-top: 0.25rem;
+}
+
+/* Scrollbar styling for dimension chart */
+.dimension-chart::-webkit-scrollbar {
+  height: 6px;
+}
+
+.dimension-chart::-webkit-scrollbar-track {
+  background: var(--bg-2);
+  border-radius: 3px;
+}
+
+.dimension-chart::-webkit-scrollbar-thumb {
+  background: var(--border-black);
+  border-radius: 3px;
+}
+
+.dimension-chart::-webkit-scrollbar-thumb:hover {
+  background: var(--text-secondary);
+}
+
+/* Dimension Leaderboard */
+.dimension-leaderboard {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.leaderboard-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem;
+  background: var(--bg-2);
+  border-radius: 8px;
+  font-size: 0.85rem;
+  border: 1px solid rgba(10, 10, 10, 0.05);
+  transition: all 0.2s;
+}
+
+.leaderboard-row:hover {
+  background: var(--bg-1);
+  transform: translateX(4px);
+}
+
+.leaderboard-model {
+  font-weight: 600;
+  color: var(--text-primary);
+  flex: 1;
+}
+
+.leaderboard-score {
+  color: var(--text-primary);
+  font-weight: 600;
+  min-width: 50px;
+  text-align: right;
+}
+
+/* Tags Grid */
+.tags-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.tag-category-card {
+  background: var(--card-bg);
+  border: 1.5px solid var(--border-black);
+  border-radius: 16px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 0 var(--accent-yellow);
+  transition: all 0.2s;
+}
+
+.tag-category-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 7px 0 var(--accent-yellow);
+}
+
+.tag-category-card h3 {
+  margin: 0 0 1rem 0;
+  font-size: 1.1rem;
+  color: var(--text-primary);
+  padding-bottom: 0.75rem;
+  border-bottom: 1.5px solid var(--border-black);
+  font-weight: 600;
+  letter-spacing: -0.3px;
+}
+
+.tag-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.tag-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem;
+  background: var(--bg-1);
+  border-radius: 8px;
+  border-left: 3px solid var(--text-primary);
+  transition: all 0.2s;
+}
+
+.tag-item:hover {
+  background: var(--bg-2);
+  transform: translateX(4px);
+}
+
+.tag-name {
+  font-weight: 500;
+  color: var(--text-primary);
+  font-size: 0.9rem;
+  text-transform: capitalize;
+}
+
+.tag-count {
+  background: var(--text-primary);
+  color: var(--card-bg);
+  padding: 0.25rem 0.75rem;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+/* Comparison Section */
+.comparison-controls {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 2rem;
+  padding: 1.5rem;
+  background: var(--card-bg);
+  border-radius: 16px;
+  border: 1.5px solid var(--border-black);
+  box-shadow: 0 4px 0 var(--accent-red);
+}
+
+.comparison-select {
+  flex: 1;
+  padding: 0.75rem 1rem;
+  font-size: 0.95rem;
+  border: 1.5px solid var(--border-black);
+  border-radius: 10px;
+  background: white;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-family: 'Poppins', sans-serif;
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+.comparison-select:hover,
+.comparison-select:focus {
+  outline: none;
+  background: var(--bg-2);
+}
+
+.vs-text {
+  font-weight: 600;
+  color: var(--text-primary);
+  font-size: 1.1rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.comparison-chart {
+  background: var(--card-bg);
+  border: 1.5px solid var(--border-black);
+  border-radius: 16px;
+  padding: 2rem;
+  box-shadow: 0 4px 0 var(--accent-blue);
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+}
+
+.comparison-chart.hidden {
+  display: none;
+}
+
+.comparison-model {
+  display: flex;
+  flex-direction: column;
+}
+
+.comparison-model-title {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 1.5rem;
+  text-align: center;
+  letter-spacing: -0.3px;
+}
+
+.comparison-dimension-row {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.comparison-dimension-label {
+  min-width: 120px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  text-align: right;
+}
+
+.comparison-bar-container {
+  flex: 1;
+  height: 24px;
+  background: var(--bg-2);
+  border-radius: 6px;
+  overflow: hidden;
+  position: relative;
+  border: 1px solid rgba(10, 10, 10, 0.08);
+}
+
+.comparison-bar-fill {
+  height: 100%;
+  background: var(--text-primary);
+  transition: width 0.3s ease;
+}
+
+/* Loading State */
+.loading-state {
+  text-align: center;
+  padding: 3rem;
+}
+
+.spinner {
+  border: 4px solid var(--bg-2);
+  border-top: 4px solid var(--text-primary);
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  animation: spin 1s linear infinite;
+  margin: 0 auto 1rem;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.loading-state p {
+  color: var(--text-secondary);
+  font-size: 1rem;
+  font-weight: 500;
+}
+
+/* Error State */
+.error-state {
+  background: #fee;
+  border: 1.5px solid var(--accent-red);
+  border-radius: 12px;
+  padding: 1.5rem;
+  text-align: center;
+}
+
+#error-message {
+  margin: 0;
+  color: var(--accent-red);
+  font-weight: 500;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .analytics-title {
+    font-size: 2rem;
+  }
+
+  .dimensions-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .comparison-chart {
+    grid-template-columns: 1fr;
+  }
+
+  .tags-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .filter-section {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .comparison-controls {
+    flex-direction: column;
+  }
+
+  .comparison-select {
+    width: 100%;
+  }
+
+  .vs-text {
+    width: 100%;
+    text-align: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .analytics-title {
+    font-size: 1.5rem;
+  }
+
+  .dimension-card {
+    padding: 1rem;
+  }
+
+  .dimension-chart {
+    min-height: 150px;
+  }
+
+  .tag-category-card {
+    padding: 1rem;
+  }
+
+  .comparison-dimension-label {
+    min-width: 80px;
+    font-size: 0.75rem;
+  }
+}
