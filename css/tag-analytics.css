@@ -122,18 +122,23 @@
   margin-bottom: 1.5rem;
   display: flex;
   align-items: flex-end;
-  justify-content: space-around;
+  justify-content: flex-start;
   gap: 0.75rem;
   padding: 1rem;
   background: #f9fafb;
   border-radius: 8px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  min-width: 0;
 }
 
 .chart-bar {
   display: flex;
   flex-direction: column;
   align-items: center;
-  flex: 1;
+  flex: 0 0 auto;
+  min-width: 60px;
+  width: 60px;
 }
 
 .bar-fill {
@@ -162,6 +167,25 @@
   color: #1f2937;
   font-weight: 700;
   margin-top: 0.25rem;
+}
+
+/* Scrollbar styling for dimension chart */
+.dimension-chart::-webkit-scrollbar {
+  height: 6px;
+}
+
+.dimension-chart::-webkit-scrollbar-track {
+  background: #f3f4f6;
+  border-radius: 3px;
+}
+
+.dimension-chart::-webkit-scrollbar-thumb {
+  background: #d1d5db;
+  border-radius: 3px;
+}
+
+.dimension-chart::-webkit-scrollbar-thumb:hover {
+  background: #9ca3af;
 }
 
 /* Dimension Leaderboard */
