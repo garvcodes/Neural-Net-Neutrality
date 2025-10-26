@@ -40,7 +40,7 @@ This work contributes to:
 1. **Add API Keys**
    ```
    Settings → Secrets and variables → Actions
-   Add: OPENAI_API_KEY, ANTHROPIC_API_KEY, GEMINI_API_KEY
+   Add: OPENAI_API_KEY, ANTHROPIC_API_KEY, GEMINI_API_KEY, and whatever else
    ```
 
 2. **Run Workflow**
