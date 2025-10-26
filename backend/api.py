@@ -6,6 +6,7 @@ import json
 import re
 from openai import OpenAI
 from typing import List, Optional, Dict
+from datetime import datetime
 from .utils import parse_response_to_likert, compute_axis_score
 from .providers import call_model
 from .supabase_db import (
@@ -486,3 +487,230 @@ def debate(req: DebateRequest):
         "arguments": arguments
     }
 
+
+# ==================== PODCAST GENERATION ENDPOINTS ====================
+
+class GeneratePodcastRequest(BaseModel):
+    """Request body for podcast generation"""
+    articles: Optional[List[Dict]] = None  # If None, will fetch from mock data
+    title: Optional[str] = None
+    model: str = "gpt-4o-mini"
+    voice: str = "news_anchor"
+
+
+@app.post("/api/generate-podcast")
+def generate_podcast(req: GeneratePodcastRequest):
+    """
+    Generate a podcast episode from articles.
+    
+    If articles not provided, uses sample data.
+    Generates news script and converts to text representation.
+    (Full TTS integration can use ElevenLabs)
+    """
+    try:
+        # Step 1: Get articles (mock data if not provided)
+        if not req.articles:
+            articles = get_sample_articles()
+        else:
+            articles = req.articles
+        
+        if not articles:
+            raise HTTPException(status_code=404, detail="No articles available")
+        
+        # Step 2: Create news prompt
+        articles_text = ""
+        for i, article in enumerate(articles, 1):
+            title = article.get("title", "Untitled")
+            content = article.get("content") or article.get("summary") or "No content"
+            source = article.get("source", "Unknown")
+            
+            articles_text += f"\nStory {i}: {title}\nSource: {source}\nContent: {content}\n---"
+        
+        # Step 3: Generate script using LLM
+        client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+        
+        prompt = f"""You are a professional news anchor creating a 2-3 minute broadcast script.
+        
+Create a politically neutral, natural and engaging news broadcast from these {len(articles)} top stories:
+{articles_text}
+
+Requirements:
+- Start with a warm greeting (Your company: Neutral Network News)
+- This is a monologue, so present directly (no "Anchor:" labels)
+- No settings or exposition (no music cues)
+- Present each story in a conversational, professional tone
+- Use smooth transitions between stories
+- Keep it concise but informative
+- End with a brief closing statement
+
+The complete script:"""
+        
+        response = client.chat.completions.create(
+            model=req.model,
+            messages=[
+                {
+                    "role": "system",
+                    "content": "You are a professional news anchor with years of experience in broadcast journalism. Create engaging, clear, and professional news scripts."
+                },
+                {
+                    "role": "user",
+                    "content": prompt
+                }
+            ],
+            temperature=0.7,
+            max_tokens=1500
+        )
+        
+        script = response.choices[0].message.content
+        
+        # Step 4: Estimate duration (rough: ~150 words per minute at normal speed)
+        word_count = len(script.split())
+        estimated_duration = max(120, int(word_count / 150 * 60))  # Min 2 minutes
+        
+        # Step 5: Format response
+        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+        episode_id = f"episode_{timestamp}"
+        
+        response_data = {
+            "success": True,
+            "episode_id": episode_id,
+            "script": script,
+            "duration_seconds": estimated_duration,
+            "title": req.title or f"Daily Brief - {datetime.now().strftime('%B %d, %Y')}",
+            "articles": articles,
+            "metadata": {
+                "generated_at": datetime.now().isoformat(),
+                "model": req.model,
+                "voice": req.voice,
+                "articles_count": len(articles),
+                "word_count": word_count
+            }
+        }
+        
+        return response_data
+        
+    except Exception as e:
+        print(f"Error generating podcast: {e}")
+        raise HTTPException(status_code=500, detail=f"Failed to generate podcast: {str(e)}")
+
+
+@app.get("/api/podcasts")
+def get_podcasts(limit: int = 10):
+    """Get list of podcast episodes (currently returns sample data)"""
+    try:
+        episodes = []
+        
+        # Return sample episodes for now
+        sample_titles = [
+            "Daily Brief - October 26, 2025",
+            "Daily Brief - October 25, 2025",
+            "Daily Brief - October 24, 2025",
+            "Daily Brief - October 23, 2025",
+            "Daily Brief - October 22, 2025",
+        ]
+        
+        for i, title in enumerate(sample_titles[:limit]):
+            date_offset = i
+            from datetime import timedelta
+            episode_date = (datetime.now() - timedelta(days=date_offset)).strftime("%Y-%m-%d")
+            
+            episode = {
+                "id": f"episode_{i+1}",
+                "title": title,
+                "description": "Your daily AI-generated neutral news podcast covering the latest in AI and politics",
+                "publication_date": episode_date,
+                "audio_url": f"https://example.com/podcast_{i+1}.mp3",
+                "duration_seconds": 180,
+                "cover_image_url": "https://images.unsplash.com/photo-1478737270239-2f02b77fc618?w=800&q=80",
+                "play_count": 0
+            }
+            episodes.append(episode)
+        
+        return {
+            "episodes": episodes,
+            "count": len(episodes),
+            "total_available": len(sample_titles)
+        }
+        
+    except Exception as e:
+        print(f"Error fetching podcasts: {e}")
+        raise HTTPException(status_code=500, detail=f"Failed to fetch podcasts: {str(e)}")
+
+
+@app.get("/api/podcasts/latest")
+def get_latest_podcast():
+    """Get today's podcast episode"""
+    try:
+        today = datetime.now().strftime("%Y-%m-%d")
+        title = f"Daily Brief - {datetime.now().strftime('%B %d, %Y')}"
+        
+        episode = {
+            "id": "episode_latest",
+            "title": title,
+            "description": "Your daily AI-generated neutral news podcast",
+            "publication_date": today,
+            "audio_url": "https://example.com/podcast_latest.mp3",
+            "duration_seconds": 180,
+            "cover_image_url": "https://images.unsplash.com/photo-1478737270239-2f02b77fc618?w=800&q=80",
+            "play_count": 0
+        }
+        
+        return {
+            "episode": episode,
+            "found": True
+        }
+        
+    except Exception as e:
+        print(f"Error fetching latest podcast: {e}")
+        raise HTTPException(status_code=500, detail=f"Failed to fetch latest podcast: {str(e)}")
+
+
+def get_sample_articles() -> List[Dict]:
+    """Return sample articles for testing"""
+    return [
+        {
+            "id": 1,
+            "title": "New AI Safety Framework Released",
+            "content": "Leading AI researchers have released a comprehensive safety framework for large language models.",
+            "summary": "New guidelines for AI safety",
+            "source": "AI Research Institute",
+            "url": "https://example.com/1",
+            "published_at": datetime.now().isoformat()
+        },
+        {
+            "id": 2,
+            "title": "Global Tech Companies Unite on AI Standards",
+            "content": "Major technology companies announced they will adopt common safety standards for AI development.",
+            "summary": "Tech companies collaborate on AI",
+            "source": "TechNews Daily",
+            "url": "https://example.com/2",
+            "published_at": datetime.now().isoformat()
+        },
+        {
+            "id": 3,
+            "title": "Policy Debate Intensifies Over AI Regulation",
+            "content": "Lawmakers from different parties discuss approaches to regulating artificial intelligence development.",
+            "summary": "AI regulation discussion",
+            "source": "Policy Watch",
+            "url": "https://example.com/3",
+            "published_at": datetime.now().isoformat()
+        },
+        {
+            "id": 4,
+            "title": "University Expands AI Research Programs",
+            "content": "Leading universities announce expanded AI research initiatives and new funding.",
+            "summary": "Universities boost AI research",
+            "source": "Education News",
+            "url": "https://example.com/4",
+            "published_at": datetime.now().isoformat()
+        },
+        {
+            "id": 5,
+            "title": "AI Impact Study Shows Mixed Results",
+            "content": "A new study examines the economic and social impacts of AI implementation.",
+            "summary": "Study on AI impacts",
+            "source": "Research Foundation",
+            "url": "https://example.com/5",
+            "published_at": datetime.now().isoformat()
+        }
+    ]
