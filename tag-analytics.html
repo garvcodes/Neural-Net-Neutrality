@@ -1,0 +1,175 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Tag Analytics — Neural Net Neutrality</title>
+  <meta name="description" content="See how each model performs across different quality dimensions." />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./css/styles.css">
+  <link rel="stylesheet" href="./css/tag-analytics.css">
+</head>
+
+<body>
+  <header class="site-header">
+    <div class="container header-inner">
+      <div class="brand">
+        <img src="./assets/logo.svg" alt="Neural Net Neutrality logo" class="logo">
+        <span class="brand-name">Neural Net Neutrality</span>
+      </div>
+      <nav class="nav">
+        <a href="./index.html">Home</a>
+        <a href="./battle.html">Battle!</a>
+        <a href="./debate.html">Debate!</a>
+        <a href="./ratings.html">Ratings</a>
+        <a href="./tag-analytics.html" class="active">Tag Analytics</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="analytics-section container">
+      <h1 class="analytics-title">Tag Analytics</h1>
+      <p class="analytics-subtitle">How each model performs across quality dimensions based on user votes with tags.</p>
+
+      <!-- Filter Controls -->
+      <div class="filter-section">
+        <label for="model-filter">Filter by Model:</label>
+        <select id="model-filter" class="filter-select">
+          <option value="">All Models</option>
+        </select>
+      </div>
+
+      <!-- Dimension Breakdown -->
+      <section class="dimensions-section">
+        <h2>Quality Dimensions</h2>
+        <p class="section-desc">Each dimension is calculated from voter tags selected during voting.</p>
+        
+        <div class="dimensions-grid">
+          <!-- Empathy Dimension -->
+          <div class="dimension-card">
+            <div class="dimension-header">
+              <h3>🤝 Empathy</h3>
+              <p class="dimension-desc">How well responses acknowledge different perspectives</p>
+            </div>
+            <div id="empathy-chart" class="dimension-chart"></div>
+            <div class="dimension-leaderboard" id="empathy-leaderboard"></div>
+          </div>
+
+          <!-- Aggressiveness Dimension -->
+          <div class="dimension-card">
+            <div class="dimension-header">
+              <h3>⚡ Aggressiveness</h3>
+              <p class="dimension-desc">How combative vs collaborative the tone is</p>
+            </div>
+            <div id="aggressiveness-chart" class="dimension-chart"></div>
+            <div class="dimension-leaderboard" id="aggressiveness-leaderboard"></div>
+          </div>
+
+          <!-- Evidence Use Dimension -->
+          <div class="dimension-card">
+            <div class="dimension-header">
+              <h3>📚 Evidence Use</h3>
+              <p class="dimension-desc">How well-supported responses are with facts and logic</p>
+            </div>
+            <div id="evidence_use-chart" class="dimension-chart"></div>
+            <div class="dimension-leaderboard" id="evidence_use-leaderboard"></div>
+          </div>
+
+          <!-- Political Economic Dimension -->
+          <div class="dimension-card">
+            <div class="dimension-header">
+              <h3>💰 Political (Economic)</h3>
+              <p class="dimension-desc">Economic policy lean (-1 = progressive, +1 = conservative)</p>
+            </div>
+            <div id="political_economic-chart" class="dimension-chart"></div>
+            <div class="dimension-leaderboard" id="political_economic-leaderboard"></div>
+          </div>
+
+          <!-- Political Social Dimension -->
+          <div class="dimension-card">
+            <div class="dimension-header">
+              <h3>🏛️ Political (Social)</h3>
+              <p class="dimension-desc">Social policy lean (-1 = progressive, +1 = conservative)</p>
+            </div>
+            <div id="political_social-chart" class="dimension-chart"></div>
+            <div class="dimension-leaderboard" id="political_social-leaderboard"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Tag Frequency Section -->
+      <section class="tags-section">
+        <h2>Most Used Tags</h2>
+        <p class="section-desc">Tags selected most frequently by voters.</p>
+        
+        <div class="tags-grid">
+          <!-- Tone Tags -->
+          <div class="tag-category-card">
+            <h3>🎭 Tone & Approach</h3>
+            <div class="tag-list" id="tone-tags"></div>
+          </div>
+
+          <!-- Reasoning Tags -->
+          <div class="tag-category-card">
+            <h3>🧠 Reasoning & Logic</h3>
+            <div class="tag-list" id="reasoning-tags"></div>
+          </div>
+
+          <!-- Structure Tags -->
+          <div class="tag-category-card">
+            <h3>⚖️ Structure & Balance</h3>
+            <div class="tag-list" id="structure-tags"></div>
+          </div>
+
+          <!-- Content Tags -->
+          <div class="tag-category-card">
+            <h3>✅ Accuracy & Content</h3>
+            <div class="tag-list" id="content-tags"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Model Comparison -->
+      <section class="comparison-section">
+        <h2>Model Comparison</h2>
+        <p class="section-desc">Select models to compare their dimension profiles side-by-side.</p>
+        
+        <div class="comparison-controls">
+          <select id="compare-model-1" class="comparison-select">
+            <option value="">Select Model 1</option>
+          </select>
+          <span class="vs-text">vs</span>
+          <select id="compare-model-2" class="comparison-select">
+            <option value="">Select Model 2</option>
+          </select>
+        </div>
+
+        <div id="comparison-chart" class="comparison-chart hidden"></div>
+      </section>
+
+      <!-- Loading State -->
+      <div id="loading-state" class="loading-state hidden">
+        <div class="spinner"></div>
+        <p>Loading tag analytics...</p>
+      </div>
+
+      <!-- Error State -->
+      <div id="error-state" class="error-state hidden">
+        <p id="error-message"></p>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-inner">
+      <p>© 2025 Neural Net Neutrality — Built for transparency in AI. Data & code open-sourced under an MIT license.</p>
+    </div>
+  </footer>
+
+  <script src="./js/config.js" defer></script>
+  <script src="./js/tag-analytics.js" defer></script>
+</body>
+</html>

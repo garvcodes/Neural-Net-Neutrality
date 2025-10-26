@@ -131,12 +131,146 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // --- Vote handlers ---
   voteA.addEventListener("click", async () => {
-    await submitVote(currentModelA, currentModelB, voteA);
+    showTagModal(currentModelA, currentModelB, voteA);
   });
 
   voteB.addEventListener("click", async () => {
-    await submitVote(currentModelB, currentModelA, voteB);
+    showTagModal(currentModelB, currentModelA, voteB);
   });
+
+  // Tag modal functions
+  const voteModal = document.getElementById("vote-modal");
+  const tagForm = document.getElementById("tag-form");
+  const modalClose = document.getElementById("modal-close");
+  const skipTagsBtn = document.getElementById("skip-tags-btn");
+  const modalOverlay = voteModal.querySelector(".modal-content");
+
+  let pendingVote = { winner: null, loser: null, button: null };
+
+  function showTagModal(winnerModel, loserModel, button) {
+    pendingVote = { winner: winnerModel, loser: loserModel, button };
+    voteModal.classList.remove("hidden");
+    tagForm.reset();
+    document.getElementById("dimension-scores").classList.add("hidden");
+  }
+
+  function closeTagModal() {
+    voteModal.classList.add("hidden");
+    tagForm.reset();
+    pendingVote = { winner: null, loser: null, button: null };
+    document.getElementById("dimension-scores").classList.add("hidden");
+  }
+
+  modalClose.addEventListener("click", closeTagModal);
+  skipTagsBtn.addEventListener("click", async () => {
+    // Submit vote without tags
+    await submitVoteWithTags(pendingVote.winner, pendingVote.loser, [], pendingVote.button);
+    closeTagModal();
+  });
+
+  voteModal.addEventListener("click", (e) => {
+    if (e.target === voteModal) {
+      closeTagModal();
+    }
+  });
+
+  // Tag form submission
+  tagForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    
+    const selectedTags = Array.from(
+      tagForm.querySelectorAll('input[name="tags"]:checked')
+    ).map(input => input.value);
+    
+    await submitVoteWithTags(
+      pendingVote.winner,
+      pendingVote.loser,
+      selectedTags,
+      pendingVote.button
+    );
+    
+    closeTagModal();
+  });
+
+  async function submitVoteWithTags(winnerModel, loserModel, tags, button) {
+    button.disabled = true;
+    const originalText = button.textContent;
+    button.textContent = "Voting...";
+
+    try {
+      const response = await fetch(`${API_CONFIG.BACKEND_URL}/api/vote-with-tags`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          winner_model: winnerModel,
+          loser_model: loserModel,
+          tags: tags,
+          topic: currentPrompt,
+        }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.detail || "Vote failed");
+      }
+
+      const data = await response.json();
+      if (data.success) {
+        button.textContent = `✓ Vote recorded! (${data.tags_recorded} tags)`;
+        
+        // Show dimension scores if tags were selected
+        if (data.tags_recorded > 0) {
+          displayDimensionScores(data.dimension_scores);
+        }
+        
+        setTimeout(() => {
+          button.textContent = originalText;
+          button.disabled = false;
+        }, 3000);
+      } else {
+        throw new Error("Vote was not recorded");
+      }
+    } catch (err) {
+      console.error("Vote error:", err);
+      button.textContent = "Error voting";
+      button.disabled = false;
+    }
+  }
+
+  function displayDimensionScores(scores) {
+    const dimensionScores = document.getElementById("dimension-scores");
+    const dimensionBars = document.getElementById("dimension-bars");
+    
+    let html = "";
+    const dimensions = [
+      { key: "empathy", label: "Empathy", range: [0, 1] },
+      { key: "aggressiveness", label: "Aggressiveness", range: [0, 1] },
+      { key: "evidence_use", label: "Evidence Use", range: [0, 1] },
+      { key: "political_economic", label: "Political (Economic)", range: [-1, 1] },
+      { key: "political_social", label: "Political (Social)", range: [-1, 1] }
+    ];
+    
+    for (const dim of dimensions) {
+      const score = scores[dim.key] || 0.5;
+      const [min, max] = dim.range;
+      
+      // Normalize score to 0-100% for display
+      const percentage = ((score - min) / (max - min)) * 100;
+      
+      html += `
+        <div class="dimension-bar">
+          <label>${dim.label}</label>
+          <div class="bar">
+            <div class="fill" style="width: ${percentage}%"></div>
+          </div>
+          <span class="value">${score.toFixed(2)}</span>
+        </div>
+      `;
+    }
+    
+    dimensionBars.innerHTML = html;
+    dimensionScores.classList.remove("hidden");
+  }
 
   async function submitVote(winnerModel, loserModel, button) {
     button.disabled = true;
