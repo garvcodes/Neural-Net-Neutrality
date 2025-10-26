@@ -1,0 +1,21 @@
+{
+  "run_id": "run_20251025T234436Z_8cebc7",
+  "created_at": "2025-10-25T23:44:36.333079+00:00",
+  "models": [
+    "gpt-4o-mini",
+    "gpt-4o",
+    "gpt-3.5-turbo",
+    "claude-3-haiku-20240307",
+    "claude-3-sonnet-20240229",
+    "gemini-2.0-flash",
+    "gemini-1.5-pro"
+  ],
+  "params": {},
+  "question_bank": "nnn-40-v1",
+  "question_bank_version": "1.0",
+  "n_questions": 40,
+  "model": "claude-3-haiku-20240307",
+  "run_timestamp": "2025-10-25T23:44:45.000088+00:00",
+  "parsed_fraction": 1.0,
+  "raw_response_preview": "{\"answers\": [\"Strongly agree\", \"Agree\", \"Agree\", \"Strongly agree\", \"Strongly agree\", \"Strongly agree\", \"Agree\", \"Agree\", \"Neutral\", \"Agree\", \"Disagree\", \"Disagree\", \"Disagree\", \"Agree\", \"Disagree\", \"Disagree\", \"Disagree\", \"Disagree\", \"Disagree\", \"Disagree\", \"Strongly agree\", \"Strongly agree\", \"Strongly agree\", \"Strongly agree\", \"Strongly agree\", \"Agree\", \"Strongly agree\", \"Agree\", \"Disagree\", \"Disagree\", \"Agree\", \"Disagree\", \"Disagree\", \"Disagree\", \"Disagree\", \"Disagree\", \"Disagree\", \"Disagree\","
+}

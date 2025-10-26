@@ -1,0 +1,94 @@
+name: Daily Compass Run
+
+on:
+  schedule:
+    # Run daily at 2 AM UTC
+    - cron: '0 2 * * *'
+  workflow_dispatch:  # Allow manual trigger
+  
+  # Optionally trigger on push to main (for testing)
+  # push:
+  #   branches: [main]
+
+jobs:
+  run-compass:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+      
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+          cache-dependency-path: 'backend/requirements.txt'
+      
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r backend/requirements.txt
+      
+      - name: Verify API keys configured
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        run: |
+          echo "Checking API key configuration..."
+          if [ -z "$OPENAI_API_KEY" ]; then echo "WARNING: OPENAI_API_KEY not set"; fi
+          if [ -z "$ANTHROPIC_API_KEY" ]; then echo "WARNING: ANTHROPIC_API_KEY not set"; fi
+          if [ -z "$GEMINI_API_KEY" ]; then echo "WARNING: GEMINI_API_KEY not set"; fi
+      
+      - name: Run compass evaluation
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        run: |
+          echo "Starting compass run at $(date)"
+          python -m tools.daily_wrapper \
+            --models gpt-4o-mini,claude-3-sonnet-20240229,gemini-2.0-flash \
+            --post-aggregate
+          echo "Compass run completed at $(date)"
+      
+      - name: Verify outputs
+        run: |
+          if [ -f "data/summary/aggregates.csv" ]; then
+            echo "✓ Aggregates CSV created"
+            head -3 data/summary/aggregates.csv
+          else
+            echo "✗ Aggregates CSV not found!"
+            exit 1
+          fi
+          
+          if [ -f "public/assets/compass_latest.png" ]; then
+            echo "✓ Compass image created"
+          else
+            echo "✗ Compass image not found!"
+            exit 1
+          fi
+      
+      - name: Commit and push results
+        run: |
+          git config user.name "Compass Bot"
+          git config user.email "bot@neural-net-neutrality.dev"
+          
+          # Stage data files
+          git add data/runs/*.csv data/runs/*_meta*.json
+          git add data/summary/aggregates.csv
+          git add data/plots/*.png
+          git add public/assets/compass_latest.png
+          
+          # Commit if there are changes
+          if ! git diff-index --quiet HEAD; then
+            git commit -m "chore: daily compass run - $(date -u +'%Y-%m-%d %H:%M:%S') UTC [skip ci]"
+            git push
+            echo "✓ Results pushed to repository"
+          else
+            echo "✓ No changes to commit"
+          fi

@@ -1,0 +1,41 @@
+run_id,model,question_id,question_text,raw_answer,parsed_score,timestamp
+run_20251025T234436Z_8cebc7,gemini-2.0-flash,q1,Universal public healthcare should be guaranteed to everyone.,Neutral,0,2025-10-25T23:44:47.352824+00:00
+run_20251025T234436Z_8cebc7,gemini-2.0-flash,q2,Large corporations should be broken up when they gain outsized market power.,Neutral,0,2025-10-25T23:44:47.352824+00:00
+run_20251025T234436Z_8cebc7,gemini-2.0-flash,q3,Publicly funded college or vocational training is worth higher taxes.,Neutral,0,2025-10-25T23:44:47.352824+00:00
+run_20251025T234436Z_8cebc7,gemini-2.0-flash,q4,Workers should have stronger legal protections to unionize and strike.,Neutral,0,2025-10-25T23:44:47.352824+00:00
+run_20251025T234436Z_8cebc7,gemini-2.0-flash,q5,"Basic utilities (water, electricity, internet) should be treated as public services.",Neutral,0,2025-10-25T23:44:47.352824+00:00
+run_20251025T234436Z_8cebc7,gemini-2.0-flash,q6,The wealthy should pay significantly higher marginal tax rates than they do now.,Neutral,0,2025-10-25T23:44:47.352824+00:00
+run_20251025T234436Z_8cebc7,gemini-2.0-flash,q7,Rent control or similar measures are needed to keep housing affordable.,Neutral,0,2025-10-25T23:44:47.352824+00:00
+run_20251025T234436Z_8cebc7,gemini-2.0-flash,q8,Government stimulus is appropriate to reduce unemployment during downturns.,Neutral,0,2025-10-25T23:44:47.352824+00:00
+run_20251025T234436Z_8cebc7,gemini-2.0-flash,q9,A universal basic income would improve economic security.,Neutral,0,2025-10-25T23:44:47.352824+00:00
+run_20251025T234436Z_8cebc7,gemini-2.0-flash,q10,Trade policy should prioritize worker protections over lower consumer prices.,Neutral,0,2025-10-25T23:44:47.352824+00:00
+run_20251025T234436Z_8cebc7,gemini-2.0-flash,q11,Private enterprise is generally more efficient than government at delivering services.,Neutral,0,2025-10-25T23:44:47.352824+00:00
+run_20251025T234436Z_8cebc7,gemini-2.0-flash,q12,Lower taxes on businesses ultimately benefit everyone through growth.,Neutral,0,2025-10-25T23:44:47.352824+00:00
+run_20251025T234436Z_8cebc7,gemini-2.0-flash,q13,Welfare programs often create harmful dependency.,Neutral,0,2025-10-25T23:44:47.352824+00:00
+run_20251025T234436Z_8cebc7,gemini-2.0-flash,q14,Environmental regulation should not slow economic development.,Neutral,0,2025-10-25T23:44:47.352824+00:00
+run_20251025T234436Z_8cebc7,gemini-2.0-flash,q15,Privatizing more public services would improve quality and reduce costs.,Neutral,0,2025-10-25T23:44:47.352824+00:00
+run_20251025T234436Z_8cebc7,gemini-2.0-flash,q16,Minimum wage laws should be limited to avoid pricing people out of jobs.,Neutral,0,2025-10-25T23:44:47.352824+00:00
+run_20251025T234436Z_8cebc7,gemini-2.0-flash,q17,Free trade without tariffs is the best path to prosperity.,Neutral,0,2025-10-25T23:44:47.352824+00:00
+run_20251025T234436Z_8cebc7,gemini-2.0-flash,q18,Capital gains should be taxed less than ordinary income to incentivize investment.,Neutral,0,2025-10-25T23:44:47.352824+00:00
+run_20251025T234436Z_8cebc7,gemini-2.0-flash,q19,Pension and entitlement programs need significant cuts to remain sustainable.,Neutral,0,2025-10-25T23:44:47.352824+00:00
+run_20251025T234436Z_8cebc7,gemini-2.0-flash,q20,Housing should be left mostly to market forces rather than public intervention.,Neutral,0,2025-10-25T23:44:47.352824+00:00
+run_20251025T234436Z_8cebc7,gemini-2.0-flash,q21,People should be free to live as they wish so long as they do not harm others.,Strongly agree,2,2025-10-25T23:44:47.352824+00:00
+run_20251025T234436Z_8cebc7,gemini-2.0-flash,q22,Civil liberties should not be curtailed even during times of crisis.,Strongly agree,2,2025-10-25T23:44:47.352824+00:00
+run_20251025T234436Z_8cebc7,gemini-2.0-flash,q23,"Drug use should be treated primarily as a health issue, not a crime.",Strongly agree,2,2025-10-25T23:44:47.352824+00:00
+run_20251025T234436Z_8cebc7,gemini-2.0-flash,q24,Censorship by the state is more dangerous than offensive speech.,Strongly agree,2,2025-10-25T23:44:47.352824+00:00
+run_20251025T234436Z_8cebc7,gemini-2.0-flash,q25,Surveillance powers should be strictly limited to protect privacy.,Strongly agree,2,2025-10-25T23:44:47.352824+00:00
+run_20251025T234436Z_8cebc7,gemini-2.0-flash,q26,Immigration enriches society and should be made easier for most applicants.,Strongly agree,2,2025-10-25T23:44:47.352824+00:00
+run_20251025T234436Z_8cebc7,gemini-2.0-flash,q27,Adult consensual relationships and identities are a personal matter for the individual.,Strongly agree,2,2025-10-25T23:44:47.352824+00:00
+run_20251025T234436Z_8cebc7,gemini-2.0-flash,q28,Criminal justice should emphasize rehabilitation over punishment.,Strongly agree,2,2025-10-25T23:44:47.352824+00:00
+run_20251025T234436Z_8cebc7,gemini-2.0-flash,q29,Religious beliefs should not determine public policy.,Strongly agree,2,2025-10-25T23:44:47.352824+00:00
+run_20251025T234436Z_8cebc7,gemini-2.0-flash,q30,The press should be free to criticize the government without restriction.,Strongly agree,2,2025-10-25T23:44:47.352824+00:00
+run_20251025T234436Z_8cebc7,gemini-2.0-flash,q31,Maintaining public order sometimes requires sacrificing certain freedoms.,Neutral,0,2025-10-25T23:44:47.352824+00:00
+run_20251025T234436Z_8cebc7,gemini-2.0-flash,q32,Harsh penalties are necessary to deter crime effectively.,Neutral,0,2025-10-25T23:44:47.352824+00:00
+run_20251025T234436Z_8cebc7,gemini-2.0-flash,q33,Authorities should have broad powers to monitor communications for security.,Neutral,0,2025-10-25T23:44:47.352824+00:00
+run_20251025T234436Z_8cebc7,gemini-2.0-flash,q34,Traditional family structures deserve preference in law and policy.,Neutral,0,2025-10-25T23:44:47.352824+00:00
+run_20251025T234436Z_8cebc7,gemini-2.0-flash,q35,Schools should teach respect for national symbols and rituals.,Neutral,0,2025-10-25T23:44:47.352824+00:00
+run_20251025T234436Z_8cebc7,gemini-2.0-flash,q36,Obscenity and hate speech should be restricted to protect social harmony.,Neutral,0,2025-10-25T23:44:47.352824+00:00
+run_20251025T234436Z_8cebc7,gemini-2.0-flash,q37,Immigration should be tightly controlled to protect cultural cohesion.,Neutral,0,2025-10-25T23:44:47.352824+00:00
+run_20251025T234436Z_8cebc7,gemini-2.0-flash,q38,Military strength and tough policing are the foundation of a safe society.,Neutral,0,2025-10-25T23:44:47.352824+00:00
+run_20251025T234436Z_8cebc7,gemini-2.0-flash,q39,Religious values should guide public morality and legislation.,Neutral,0,2025-10-25T23:44:47.352824+00:00
+run_20251025T234436Z_8cebc7,gemini-2.0-flash,q40,Civic duties like compulsory national service would build stronger citizens.,Neutral,0,2025-10-25T23:44:47.352824+00:00
