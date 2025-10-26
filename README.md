@@ -1,4 +1,4 @@
-````markdown
+
 # Neural Net Neutrality 🧭
 
 **Track how LLM political leanings evolve — clearly and fairly.**
