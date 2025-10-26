@@ -198,33 +198,49 @@ def update_ratings(winner_model: str, loser_model: str, k_factor: int = 32) -> t
     try:
         cursor = conn.cursor(cursor_factory=RealDictCursor)
         
-        # Get current ratings
+        # Get current ratings - if model doesn't exist, insert it first with default 1500
         cursor.execute("SELECT rating FROM elo_ratings WHERE model_name = %s", (winner_model,))
         winner_result = cursor.fetchone()
-        winner_rating = winner_result['rating'] if winner_result else 1500
+        
+        if not winner_result:
+            # Insert new model with default rating
+            cursor.execute("""
+                INSERT INTO elo_ratings (model_name, rating, wins, losses)
+                VALUES (%s, 1500.0, 0, 0)
+            """, (winner_model,))
+            winner_rating = 1500.0
+        else:
+            winner_rating = float(winner_result['rating'])
         
         cursor.execute("SELECT rating FROM elo_ratings WHERE model_name = %s", (loser_model,))
         loser_result = cursor.fetchone()
-        loser_rating = loser_result['rating'] if loser_result else 1500
         
-        # Calculate new ratings
-        new_winner_rating, new_loser_rating = update_elo(winner_rating, loser_rating, 1)
+        if not loser_result:
+            # Insert new model with default rating
+            cursor.execute("""
+                INSERT INTO elo_ratings (model_name, rating, wins, losses)
+                VALUES (%s, 1500.0, 0, 0)
+            """, (loser_model,))
+            loser_rating = 1500.0
+        else:
+            loser_rating = float(loser_result['rating'])
         
-        # Upsert winner
+        # Calculate new ratings (pass "1" as string for winner)
+        new_winner_rating, new_loser_rating = update_elo(winner_rating, loser_rating, "1")
+        
+        # Update winner
         cursor.execute("""
-            INSERT INTO elo_ratings (model_name, rating, wins, updated_at)
-            VALUES (%s, %s, 1, CURRENT_TIMESTAMP)
-            ON CONFLICT (model_name) DO UPDATE
+            UPDATE elo_ratings 
             SET rating = %s, wins = wins + 1, updated_at = CURRENT_TIMESTAMP
-        """, (winner_model, round(new_winner_rating, 2), round(new_winner_rating, 2)))
+            WHERE model_name = %s
+        """, (round(new_winner_rating, 2), winner_model))
         
-        # Upsert loser
+        # Update loser
         cursor.execute("""
-            INSERT INTO elo_ratings (model_name, rating, losses, updated_at)
-            VALUES (%s, %s, 1, CURRENT_TIMESTAMP)
-            ON CONFLICT (model_name) DO UPDATE
+            UPDATE elo_ratings 
             SET rating = %s, losses = losses + 1, updated_at = CURRENT_TIMESTAMP
-        """, (loser_model, round(new_loser_rating, 2), round(new_loser_rating, 2)))
+            WHERE model_name = %s
+        """, (round(new_loser_rating, 2), loser_model))
         
         conn.commit()
         return new_winner_rating, new_loser_rating
