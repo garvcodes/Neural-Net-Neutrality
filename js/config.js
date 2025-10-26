@@ -2,11 +2,8 @@
 // For production, this should point to your Render backend URL
 // For local development, use localhost
 const API_CONFIG = {
-  // Change this to your Render backend URL once deployed
-  // Example: 'https://your-app-name.onrender.com'
-  BACKEND_URL: window.location.hostname === 'localhost'
-    ? 'http://localhost:3001'
-    : 'https://your-render-backend-url.onrender.com', // UPDATE THIS after deploying to Render
+  // Render backend URL
+  BACKEND_URL: 'https://neural-net-neutrality.onrender.com',
 
   // API endpoints
   ENDPOINTS: {
