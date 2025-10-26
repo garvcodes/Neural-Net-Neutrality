@@ -7,6 +7,8 @@ Requires environment variables:
   - DATABASE_URL: PostgreSQL connection string (optional, for direct psycopg2 connection)
 """
 
+#*Hopefully this works now...*
+
 import os
 from typing import Optional, Dict, List
 import psycopg2
