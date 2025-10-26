@@ -79,4 +79,3 @@ tmp/
 *.key
 *.crt
 .env
-.env
